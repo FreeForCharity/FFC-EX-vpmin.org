@@ -1,0 +1,47 @@
+name: FFC Drift Check
+
+# Enforces FFC best practices on every PR:
+#  - kebab-case route folders
+#  - assetPath() wrapping of /Images, /Svgs, /videos paths
+#  - common committed-secret patterns
+#  - placeholder URL still left in site config when CNAME points elsewhere
+#  - a workflow passing `static_site_generator: next` to configure-pages while
+#    the Next config is TypeScript (the action then discards next.config.ts)
+#
+# See scripts/check-drift.mjs for the full ruleset.
+
+on:
+  pull_request:
+    branches: ['main']
+  push:
+    branches: ['main']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  drift:
+    name: Verify FFC best practices
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Run drift check
+        run: node scripts/check-drift.mjs
+
+      # Validates src/lib/site.config.ts against the shared cross-template
+      # SiteConfig contract (schema/site-config.schema.json, kept identical
+      # in FFC-IN-FFC_Single_Page_Template and FFC-IN-Footer_Only_Template).
+      - name: Run shared SiteConfig contract check
+        run: node scripts/check-site-config.mjs

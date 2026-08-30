@@ -1,0 +1,958 @@
+# Free For Charity Website
+
+Single-page Next.js 16.0.7 website built with App Router for Free For Charity nonprofit organization.
+
+## Who This Template Is For — and Where It Fits in the FFC Journey
+
+This template is the **starting point for charities that don't have a website yet** — most pre-501(c)(3) organizations, plus mature charities that never had one. An FFC volunteer builds a complete single-page site from the charity's own content, guaranteeing every section FFC requires (mission, programs, contact, legal/policy pages, cookie consent, analytics, footer) is present from day one.
+
+It is one of two website paths in the gated [FFC charity onboarding journey](https://freeforcharity.org/charity-onboarding-journey/):
+
+- **No existing website?** Start here — this template.
+- **Already have a designed website?** Use the sibling [FFC Footer-Only Template](https://github.com/FreeForCharity/FFC-IN-Footer_Only_Template) instead, which adds the FFC footer, policy pages, cookie consent, and analytics layer to the charity's existing design.
+
+Both paths converge on the same validation gate: the new site launches on its **free GitHub Pages address first** (no custom domain) and must be validated live there against the FFC standard. Only after the site passes validation does FFC purchase the charity's free .org domain — which in turn unlocks email setup.
+
+## 🎉 Phase 5 Implementation Complete
+
+**Status:** ✅ All critical gaps closed. Repository now has enterprise-grade tooling, comprehensive testing, and professional documentation.
+
+**Quick Links:**
+
+- 📚 [Quick Start Guide](./QUICK_START.md) - Get set up in 5 minutes
+- 🎯 [**Template Usage Guide**](./TEMPLATE_USAGE.md) - **NEW**: Complete guide for using this repository as a template
+- 📋 [**Content Replacement Guide**](./CONTENT_REPLACEMENT_GUIDE.md) - **NEW**: Identify every piece of content to replace for your charity
+- 📋 [Site Improvements Summary](./SITE_IMPROVEMENTS.md) - See what was implemented (13 of 19 gaps closed)
+- 🧪 [Testing Guide](./TESTING.md) - Unit + E2E + Accessibility tests
+- 🎨 [Responsive Design Guide](./RESPONSIVE_DESIGN.md) - Mobile-first design principles
+- 📝 [Naming Conventions](./NAMING_CONVENTIONS.md) - **Required**: kebab-case for SEO (Google-recommended)
+- 🤖 [Copilot Autofix Guide](./COPILOT_AUTOFIX_GUIDE.md) - Understanding GitHub Copilot automated checks
+- 🔗 [External Dependencies](./EXTERNAL_DEPENDENCIES.md) - Third-party services and integrations
+- 🏥 [Community Health Files](./COMMUNITY_HEALTH_FILES.md) - Complete guide to GitHub navigation and documentation
+
+## Organization
+
+**Free For Charity** is a 501(c)(3) nonprofit organization (EIN: 46-2471893) dedicated to supporting other nonprofits.
+
+## CNCF-Compliant Open Source Project
+
+This repository follows **Cloud Native Computing Foundation (CNCF)** standards for governance, security, and community practices. We are committed to transparency, inclusive participation, and professional project management.
+
+### Project Governance and Policies
+
+- 📜 **[LICENSE](./LICENSE)** - Apache 2.0 open source license
+- 🤝 **[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)** - Community standards and reporting (Contributor Covenant 2.1)
+- ⚖️ **[GOVERNANCE.md](./GOVERNANCE.md)** - Decision-making processes and project leadership
+- 👥 **[MAINTAINERS.md](./MAINTAINERS.md)** - Repository maintainers and their roles
+- 🎉 **[CONTRIBUTORS.md](./CONTRIBUTORS.md)** - Recognition of all project contributors
+- 🔒 **[SECURITY.md](./SECURITY.md)** - Vulnerability reporting and security practices
+- 🛡️ **[THREAT-MODEL.md](./THREAT-MODEL.md)** - Security threat analysis and mitigations
+- 🌟 **[ADOPTERS.md](./ADOPTERS.md)** - Organizations using this template
+- 🤝 **[CONTRIBUTING.md](./CONTRIBUTING.md)** - How to contribute to the project
+- 💬 **[SUPPORT.md](./SUPPORT.md)** - How to get help and support
+- 🔗 **[EXTERNAL_DEPENDENCIES.md](./EXTERNAL_DEPENDENCIES.md)** - Third-party services and privacy disclosure
+- 📖 **[CITATION.cff](./CITATION.cff)** - Citation information for academic use
+- 📝 **[CHANGELOG.md](./CHANGELOG.md)** - Release notes and version history
+
+**Why CNCF Alignment?** Following CNCF standards strengthens project credibility, simplifies onboarding of contributors, and prepares us for cloud-native ecosystem integrations. It demonstrates our commitment to open source best practices and professional project management.
+
+**Primary Contact**: Clarke Moyer ([@clarkemoyer](https://github.com/clarkemoyer)) - clarkemoyer@freeforcharity.org
+
+## Using This Repository as a Template
+
+This repository is configured as a GitHub template, making it easy to create your own nonprofit website with all the features and best practices included.
+
+### Quick Template Setup
+
+1. **Click "Use this template"** button at the top of this repository
+2. **Create your new repository** with your organization's name
+3. **Follow the [Template Usage Guide](./TEMPLATE_USAGE.md)** for complete setup instructions
+4. **Review the [Content Replacement Guide](./CONTENT_REPLACEMENT_GUIDE.md)** to identify all content to replace
+
+### AI-Assisted Customization Prompt
+
+If you're using Claude Code (or another coding agent), paste the prompt below into a fresh session with your forked repository open. Fill in the bracketed `[VALUES]` with your charity's real information first — everything else is wired up so the agent edits the right files and runs the right checks.
+
+> **One-line summary:** "Convert this FFC template into a site for `[CHARITY NAME]` by editing `src/lib/site.config.ts`, related public assets, and content data — then run the pre-commit gauntlet."
+
+<details>
+<summary><strong>Click to expand: full copy-paste prompt</strong></summary>
+
+```markdown
+You are converting this Free For Charity template into a site for a specific
+501(c)(3) nonprofit. Read TEMPLATE_CUSTOMIZATION.md first — it maps every
+config field to where it surfaces. Then make the changes below as a single
+focused commit per logical step. After each step run `pnpm run check:drift`
+and report any new warnings.
+
+## CHARITY INFORMATION
+
+- Display name: [CHARITY NAME]
+- One-sentence tagline: [TAGLINE]
+- SEO description (1–2 sentences): [DESCRIPTION]
+- Card description (shorter, for OG/Twitter previews): [SHORT_DESCRIPTION]
+- Production URL (no trailing slash): [https://example.org]
+- Twitter/X handle (or empty string ''): [@handle]
+- Primary contact email (drives siteConfig.contactEmail and the footer): [hello@example.org]
+- Security disclosure email (drives the Contact: line in security.txt only): [security@example.org]
+- Vulnerability disclosure path: /vulnerability-disclosure-policy (keep default)
+- Social links (used by siteConfig.social; the footer icon is resolved by label):
+  - Facebook: [https://www.facebook.com/example]
+  - X (Twitter): [https://x.com/example]
+  - LinkedIn: [https://www.linkedin.com/company/example/]
+  - GitHub: [https://github.com/example]
+
+NOTE: There is only ONE central contact field (`siteConfig.contactEmail`).
+`public/.well-known/security.txt` carries its own `Contact:` line because
+RFC 9116 requires it on the file itself — set it to the security email
+above. The drift guard does not auto-sync the two; keep them aligned by
+hand or use the same address for both.
+
+## REQUIRED EDITS
+
+1. src/lib/site.config.ts
+   - Update siteConfig: name, tagline, description, shortDescription, url,
+     twitterHandle, contactEmail, keywords, themeColor, social.
+   - Do NOT change the helper signatures (siteUrl, twitterSite,
+     cardDescription) — they're consumed by layout/robots/sitemap.
+
+2. public/CNAME
+   - Replace with the production hostname (no scheme, no trailing slash).
+   - If launching only on github.io for now, DELETE this file.
+
+3. public/.well-known/security.txt
+   - Update Contact, Canonical, Policy, Acknowledgments to the new URL.
+   - Bump Expires to ~12 months out, formatted YYYY-MM-DDTHH:MM:SSZ.
+
+4. Web manifest — NO direct edits needed.
+   - The manifest is auto-generated from siteConfig by src/app/manifest.ts
+     and served at /manifest.webmanifest at build time. Editing
+     siteConfig.{name, shortDescription, themeColor} (step 1) updates it.
+   - DO NOT add a static public/site.webmanifest back — it was deleted on
+     purpose so the values can't drift from siteConfig.
+
+5. public/Images/ and public/Svgs/
+   - Replace branded assets. KEEP existing filenames where possible so the
+     LCP preload in layout.tsx still hits a real file.
+   - Header logo: src/components/header/index.tsx still hardcodes an image
+     from a third-party URL (freeforcharity.org WordPress). Replace it
+     with a self-hosted asset under /Images/ or /Svgs/ and use
+     assetPath().
+
+6. src/data/{faqs,team,testimonials}.ts
+   - Replace example content with the charity's real data.
+
+7. src/components/home-page/ sections
+   - Update copy, links, and CTAs. Keep accessibility intact (alt text,
+     aria-labels, focus styles).
+
+8. Legal pages under src/app/ (privacy-policy, terms-of-service,
+   cookie-policy, donation-policy)
+   - REVIEW with the charity's counsel before committing. Update org name
+     references.
+
+9. .github/workflows/deploy.yml, .github/workflows/lighthouse.yml
+   - NO edits required. `NEXT_PUBLIC_BASE_PATH` is now chosen automatically
+     based on whether `public/CNAME` is present (empty if CNAME exists,
+     `/<repo-name>` if not). Renaming the repo doesn't require a workflow
+     edit.
+
+10. README.md, GitHub repo description, CITATION.cff
+    - Update organization name, repo links, and citation metadata.
+
+## DO NOT TOUCH
+
+- `scripts/check-drift.mjs` — platform contract (drift enforcement).
+- `.github/workflows/ci.yml`, `.github/workflows/scorecard.yml`,
+  `.github/workflows/security-audit.yml`,
+  `.github/workflows/security-txt-expiry.yml`,
+  `.github/workflows/drift-check.yml`, `.github/workflows/uptime.yml`,
+  `.github/workflows/phantom-revert-guard.yml` — shared CI/security workflows.
+- `.github/workflows/deploy.yml`, `.github/workflows/lighthouse.yml` —
+  you ONLY edit `NEXT_PUBLIC_BASE_PATH` in these (per step 9). Don't
+  change anything else.
+- `src/lib/assetPath.ts`, `src/app/manifest.ts`,
+  `src/app/sitemap.ts`, `src/app/robots.ts` — shared helpers that
+  derive everything from `siteConfig`. Don't hardcode values here.
+- `next.config.ts` `output: 'export'` line — required for GitHub Pages.
+- `.claude/agents/*.md`, `.claude/rules/*.md` — shared FFC tooling.
+
+## VERIFICATION (run in order, fix any failure before proceeding)
+
+1. pnpm install
+2. pnpm run format
+3. pnpm run lint
+4. pnpm run check:drift ← MUST be 0 errors; ideally fewer warnings than before
+5. pnpm test
+6. pnpm run build
+7. pnpm run test:e2e
+
+Open a PR titled `chore: initial customization for [CHARITY NAME]`. In the
+body include:
+
+- A checklist of every file you touched (drives reviewer focus)
+- Output of `pnpm run check:drift` (proves no new errors)
+- Confirmation that legal pages were reviewed by counsel
+- The custom domain (or "github.io fallback only" if no domain yet)
+
+## ESCALATION
+
+If you encounter any of the following, STOP and ask before editing:
+
+- A feature the charity needs that the template doesn't have (contact form
+  backend, members area, dynamic content). Static export limits options.
+- A request to disable security headers, drift checks, or branch protection.
+- A request to embed a third-party widget — the new origin must be added to
+  BOTH public/\_headers AND the CSP meta tag in src/app/layout.tsx. The
+  drift check enforces these two stay in sync; CI will fail on mismatch.
+  Only the meta tag is actually served (public/\_headers is inert on FFC's
+  GitHub Pages + Cloudflare proxy stack), so the meta tag is the one that
+  decides whether the widget loads.
+```
+
+</details>
+
+The prompt is intentionally explicit about the **"do not touch"** list and the **escalation** rules so the agent doesn't drift away from FFC best practices while customizing. The `.claude/agents/onboarding.md` agent definition codifies the same flow for sessions that auto-discover available agents.
+
+### Content Customization
+
+The **[Content Replacement Guide](./CONTENT_REPLACEMENT_GUIDE.md)** provides a comprehensive 4-column table identifying every piece of content you need to provide:
+
+- **All website sections** - From navigation to footer, every section documented
+- **Current example content** - See what Free For Charity uses
+- **Your content column** - Fill in your charity's information
+- **Technical guidance** - Image sizes, file formats, and implementation notes
+
+**Perfect for non-technical users** - The guide explains everything in plain language with step-by-step instructions.
+
+### What's Included in the Template
+
+✅ **Ready to Use:**
+
+- Next.js 16.0.7 with TypeScript and static export
+- Tailwind CSS for styling
+- Comprehensive testing (Jest + Playwright)
+- GitHub Actions CI/CD workflows
+- Security scanning (CodeQL + Dependabot)
+- Performance monitoring (Lighthouse CI)
+- SEO optimization (sitemap, robots.txt, metadata)
+- Community health files (Code of Conduct, Contributing, Security, etc.)
+
+⚙️ **Requires Configuration:**
+
+- GitHub Pages deployment settings
+- Branch protection rules
+- Dependabot alerts and security updates
+- Custom domain (if applicable)
+- Organization-specific content and branding
+
+📋 **Complete Setup Guide:**
+
+The [**Template Usage Guide (TEMPLATE_USAGE.md)**](./TEMPLATE_USAGE.md) provides:
+
+- Step-by-step setup checklist
+- GitHub repository settings configuration
+- Security and quality settings
+- Customization instructions
+- Troubleshooting for common issues
+- Tips for reducing setup burden
+
+**Note**: Some settings (GitHub Pages, branch protection, Dependabot) must be configured through GitHub's web interface as they cannot be included in template files. The guide explains exactly what needs to be configured and why.
+
+## Purpose
+
+Free For Charity connects students, professionals, and businesses with nonprofits to reduce operating costs and increase impact. By providing free web hosting, domain names, Microsoft 365 grants assistance, and consulting services, we help nonprofits put more resources back into their charitable missions.
+
+## Main Calls-to-Action
+
+The site features two primary CTAs accessible throughout the experience via global popups:
+
+- **Donate**: Support our mission with financial contributions
+- **Volunteer**: Join our team of skilled volunteers helping nonprofits
+
+## Deployment
+
+- **Live Site (GitHub Pages default URL)**: [https://freeforcharity.github.io/FFC-IN-FFC_Single_Page_Template/](https://freeforcharity.github.io/FFC-IN-FFC_Single_Page_Template/)
+- **Custom domain**: none — the template deliberately deploys, tests, and smoke-checks on the default URL; forks add their own domain via `public/CNAME`
+- **Hosting**: GitHub Pages
+- **Deployment**: Automated via GitHub Actions on push to `main` branch
+
+## Development Status
+
+**Current Status: Production Ready ✅**
+
+The site is live and fully functional with the following features:
+
+✅ **Complete and Functional:**
+
+- Core navigation and layout (mobile and desktop responsive)
+- SEO optimization (metadata, sitemap, robots.txt)
+- Static site generation and deployment pipeline
+- All 7 policy pages created and linked (Privacy Policy, Cookie Policy, Terms of Service, Donation Policy, Free For Charity Donation Policy, Vulnerability Disclosure Policy, Security Acknowledgements)
+- Social media links configured (Facebook, Twitter/X, LinkedIn, GitHub)
+- Footer links fully functional with proper destinations
+- Contact information complete (email, phone, addresses)
+- Deployed to the GitHub Pages default URL: [https://freeforcharity.github.io/FFC-IN-FFC_Single_Page_Template/](https://freeforcharity.github.io/FFC-IN-FFC_Single_Page_Template/)
+- No custom domain required: build, deploy, smoke test, and footer checks all run against the default URL
+
+⚠️ **Known Limitations:**
+
+- Global Donate and Volunteer popups present in codebase but currently commented out in `layout.tsx`
+- 6 placeholder links remain in non-critical locations:
+  - 2 program application CTAs in "Ready to Get Started Now?" section (501c3 and Pre-501c3 onboarding links)
+  - 4 informational links in onboarding documentation (domain management and contact references)
+- Contact sections are informational only (no form submission backend)
+- Footer includes a Google+ social media link (service shut down in April 2019 - link should be removed or replaced)
+
+## Overview
+
+This is a single-page website with **100+ component files** organized into multiple sections that showcase Free For Charity's programs, services, and resources. The homepage is composed of scrollable sections (Hero, Mission, Programs, Team, FAQ, etc.), with 7 additional policy pages for legal content. The site includes a global popup system for donations and volunteer signups (codebase includes the infrastructure, though the popups are currently commented out in `layout.tsx`).
+
+### Site Structure
+
+**IMPORTANT:** When new pages or sections are added, explicitly list them here. Keep this documentation up to date.
+
+**Homepage (Single Page Application):**
+
+The main page (`/`) is a single-page application composed of scrollable sections:
+
+- Hero section
+- Mission statement
+- 2023 Results
+- Testimonials
+- Volunteer call-to-action
+- Support/Donate section
+- Endowment Fund features
+- Programs overview
+- Frequently Asked Questions
+- Team section
+
+**Legal & Policy Pages (7 Separate Routes):**
+
+- Privacy Policy (`/privacy-policy`)
+- Cookie Policy (`/cookie-policy`)
+- Terms of Service (`/terms-of-service`)
+- Donation Policy (`/donation-policy`)
+- Free For Charity Donation Policy (`/free-for-charity-donation-policy`)
+- Vulnerability Disclosure Policy (`/vulnerability-disclosure-policy`)
+- Security Acknowledgements (`/security-acknowledgements`)
+
+**Note:** All the program information, services, guides, and content are presented as sections within the single-page homepage rather than as separate page routes.
+
+## Tech Stack
+
+- Next.js (App Router, TypeScript)
+- Tailwind-style utility classes for styling
+- next/font for Google fonts (Faustina, Fauna One, Lato, Inter)
+
+## Content Management
+
+Content such as FAQs, Team Members, and Testimonials is stored as JSON files in the `src/data/` directory. To edit content, simply modify the JSON files directly.
+
+## Local Development
+
+1. Install dependencies
+
+```bash
+pnpm install
+```
+
+2. Run the dev server
+
+```bash
+pnpm run dev
+```
+
+Visit http://localhost:3000
+
+## Testing
+
+This project includes automated tests to ensure quality and consistency.
+
+### Running Tests
+
+```bash
+# Build the site first
+pnpm run build
+
+# Install Playwright browsers (first time only)
+pnpm exec playwright install chromium
+
+# Run tests
+pnpm test              # Headless mode
+pnpm run test:headed   # With browser visible
+pnpm run test:ui       # Interactive UI mode
+```
+
+### Current Test Coverage
+
+#### End-to-End Tests (Playwright)
+
+**Logo Visibility Tests** (`tests/logo.spec.ts`)
+
+- ✅ **NavBar Logo Visibility**: Verifies logo appears in top left corner with correct src and alt text
+- ✅ **Hero Section Logo Visibility**: Verifies logo appears in hero section with correct src and alt text
+- ✅ **Logo Consistency**: Confirms both logos are present simultaneously and use the same image source
+
+**GitHub Pages Deployment Tests** (`tests/github-pages.spec.ts`)
+
+- ✅ **Image Path Compatibility**: Validates logo image paths work for both custom domain and GitHub Pages basePath
+- ✅ **Image HTTP Status**: Verifies logo images return 200 OK status codes
+- ⏭️ **Image Natural Dimensions** (skipped): Checks image dimensions after load (disabled in CI due to timing issues)
+
+**Test Configuration** (`playwright.config.ts`)
+
+- Uses system Chromium browser to avoid network download issues
+- Runs against built static site (`pnpm run preview`)
+- Retries failed tests 2x in CI, 0x locally
+- Collects traces on first retry for debugging
+
+Tests run automatically on every push to main via GitHub Actions before deployment.
+
+### Static Code Analysis
+
+**ESLint** (`eslint.config.mjs`)
+
+- ✅ Next.js core-web-vitals and TypeScript rules enabled
+- ✅ Runs automatically during build process
+- ⚠️ Currently reports 16 warnings - see details below
+
+**ESLint Warning Details:**
+
+The ESLint warnings fall into three categories:
+
+1. **`@next/next/no-img-element` warnings (6 occurrences)** - ⚠️ ACCEPTABLE for this project
+   - Files: `header/index.tsx`, `footer/index.tsx`, `endowment-fund/Hero/index.tsx`, `free-charity-web-hosting/About-FFC-Hosting/index.tsx`, `ui/General-Donation-Card.tsx`, `ui/trainingcard.tsx`
+   - Issue: Using `<img>` tags instead of Next.js `<Image />` component
+   - Why acceptable: This project uses static export (`output: "export"` in `next.config.ts`), which is incompatible with Next.js Image Optimization. We use the `assetPath()` helper to ensure images work correctly on both custom domain and GitHub Pages basePath.
+   - Alternative fix: Could suppress these specific warnings or migrate to a custom image component
+   - Website impact: Images load correctly but without automatic optimization (WebP conversion, lazy loading). For a static nonprofit site with modest image usage, this is an acceptable tradeoff.
+
+2. **React Hooks warnings - `react-hooks/set-state-in-effect` (6 occurrences)** - ⚠️ ACCEPTABLE but could be improved
+   - Files: Various accordion components (`Accordion.tsx`, `AccordionBold.tsx`, `Frequently-Asked-Questions.tsx`, `OrangeFaqItem.tsx`, `free-charity-web-hosting/FAQs/index.tsx`) and `cookie-consent/index.tsx`
+   - Issue: Calling `setState` synchronously within `useEffect` when animating accordion height or loading preferences
+   - Why acceptable: These components work correctly and don't cause performance issues in practice
+   - Recommended fix: Use `useLayoutEffect` instead of `useEffect` for DOM measurements, or use CSS transitions with `max-height`
+   - Website impact: Accordion animations work correctly. May cause minor cascading renders but not noticeable to users.
+
+3. **React Hooks warnings - Other (4 occurrences)** - ⚠️ ACCEPTABLE but could be improved
+   - `react-hooks/exhaustive-deps` (2 occurrences): Missing dependencies in `useEffect`
+     - Files: `free-charity-web-hosting/ClientTestimonials/index.tsx`, `ui/CallToActionCard.tsx`
+     - Impact: Effects may not re-run when dependencies change, but current implementation works as intended
+   - `react-hooks/immutability` (2 occurrences): Direct mutation of state values
+     - Files: `free-charity-web-hosting/ClientTestimonials/index.tsx`, `home/Testimonials/index.tsx`
+     - Issue: Modifying Swiper navigation params directly instead of using setter
+     - Impact: Works correctly but violates React best practices
+   - These are technical debt items that don't affect functionality but should be addressed in future refactoring
+
+**Summary:**
+
+- 6 warnings are acceptable by design (static export constraint)
+- 10 warnings are technical debt that don't affect functionality
+- All warnings have been reviewed and determined to be non-blocking
+- Website functions correctly despite these warnings
+
+**For detailed technical debt tracking:** See [TECHNICAL_DEBT.md](./TECHNICAL_DEBT.md) for comprehensive documentation of all technical debt items, including these React Hooks warnings, security vulnerabilities, and future refactoring plans.
+
+**TypeScript** (`tsconfig.json`)
+
+- ✅ Strict mode enabled
+- ✅ Type checking runs during build
+
+### Security Analysis
+
+**GitHub Dependabot**
+
+- ✅ **Configuration File**: `.github/dependabot.yml` enables version updates
+  - npm packages (production and development dependencies)
+  - GitHub Actions workflow dependencies
+  - Weekly updates every Monday at 9:00 AM UTC
+  - Grouped updates for easier review
+- ⚙️ **Repository Settings**: Must be enabled for security alerts and security updates
+  - Settings → Security & Analysis → Dependabot alerts (enable this)
+  - Settings → Security & Analysis → Dependabot security updates (enable this)
+  - Security updates run immediately when vulnerabilities are detected
+- 📊 Monitor Dependabot PRs in the repository's Pull Requests tab
+- 📖 **Full Guide**: See [DEPENDABOT.md](./DEPENDABOT.md) for comprehensive documentation and setup instructions
+
+**CodeQL Security Scanning** (GitHub code scanning **default setup** — no workflow file)
+
+- 🏢 **Configured at the organization level.** Free For Charity enables CodeQL
+  **default (standard) setup** org-wide, so repositories created from this
+  template inherit it automatically — no per-repo configuration needed.
+- 🚫 **No `codeql.yml` is committed on purpose.** A repo-level advanced CodeQL
+  workflow and org/repo default setup **cannot both be enabled** — committing
+  one re-introduces the standard/advanced conflict this template avoids.
+- ✅ Scans JavaScript/TypeScript code for security vulnerabilities
+- ✅ Scans GitHub Actions workflows for security issues
+- ✅ Runs on push to main, pull requests, and a weekly schedule (GitHub-managed)
+- 📊 View results in repository Security → Code scanning alerts
+
+**Setting up CodeQL when you use this template**
+
+If your repository is **not** covered by an organization-level default setup
+(e.g. a personal fork or an org without it configured), enable standard setup
+per repository:
+
+1. Go to **Settings → Security & Analysis** (a.k.a. "Code security").
+2. Under **Code scanning**, click **Set up → Default**.
+3. Confirm the languages (JavaScript/TypeScript and Actions are auto-detected)
+   and click **Enable CodeQL**.
+4. After the first scan, add the **`CodeQL`** check to your branch protection /
+   ruleset required status checks (see [TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md)).
+
+> ⚠️ **Do not** add a `.github/workflows/codeql.yml` advanced workflow. Default
+> setup and an advanced workflow conflict, and GitHub will refuse to enable
+> default setup while the workflow exists. Use default setup only.
+
+**pnpm audit**
+
+- All dependencies are checked for security vulnerabilities
+- Run `pnpm audit` locally to check for known security issues
+- ⚠️ **Known Issues**: As of December 2025, there are 4 low severity vulnerabilities
+  - Low: tmp package vulnerabilities affecting Lighthouse CI dev dependency only
+  - Impact: Limited to development environment, does not affect production site
+  - Fix available via `pnpm audit --fix` (may involve breaking changes)
+  - These are being monitored and will be addressed through regular Dependabot updates
+  - See [TECHNICAL_DEBT.md](./TECHNICAL_DEBT.md) for tracking and prioritization
+  - See [SECURITY.md](./SECURITY.md) for detailed information and mitigation steps
+
+### CI/CD Integration
+
+**Separate CI and Deployment Workflows** (Phase 5 Implementation)
+
+The project uses separate workflows for better separation of concerns:
+
+**CI Workflow** (`.github/workflows/ci.yml`)
+
+- ✅ Runs on all pull requests and pushes
+- ✅ Node.js 24 setup
+- ✅ Dependency installation (`pnpm install --frozen-lockfile`)
+- ✅ Code formatting check (Prettier)
+- ✅ Linting (ESLint)
+- ✅ Unit tests (Jest)
+- ✅ Playwright browser installation
+- ✅ Next.js build with GitHub Pages basePath
+- ✅ E2E tests (Playwright)
+- ✅ Fast feedback for PRs (no deployment overhead)
+
+**Deploy Workflow** (`.github/workflows/deploy.yml`)
+
+- ✅ Runs only after CI workflow completes successfully
+- ✅ Ensures all tests pass before deployment
+- ✅ Node.js 24 setup
+- ✅ Dependency installation (`pnpm install --frozen-lockfile`)
+- ✅ Next.js build with GitHub Pages basePath
+- ✅ Static site artifact upload
+- ✅ Deployment to GitHub Pages
+- ✅ Separate deployment job with environment protection
+
+### Implemented Quality Enhancements (Phase 1-5)
+
+The following quality improvements have been successfully implemented:
+
+#### ✅ Testing Infrastructure (Phases 2 & 4)
+
+- ✅ **Unit Testing**: Jest + React Testing Library with 26 tests passing (4 test suites)
+- ✅ **Accessibility Testing**: jest-axe for WCAG compliance checks (3 components tested)
+- ✅ **E2E Testing**: Playwright for critical user paths
+- ✅ **Performance Testing**: Lighthouse CI monitoring Core Web Vitals
+- ✅ **Test Coverage**: ~5% baseline established with coverage thresholds
+
+#### ✅ Code Quality Automation (Phase 1)
+
+- ✅ **Code Formatting**: Prettier for consistent code style (3.7.4)
+- ✅ **Pre-commit Hooks**: Husky enforcing formatting and linting before commits
+- ✅ **Conventional Commits**: Commitlint enforcing commit message standards
+- ✅ **Editor Config**: .editorconfig for consistent editor settings
+- ✅ **ESLint**: Next.js rules + Prettier integration
+
+#### ✅ Security & Monitoring (Phases 1 & 3)
+
+- ✅ **Dependabot**: Automated dependency updates (npm + GitHub Actions)
+- ✅ **CodeQL**: Security vulnerability scanning (JavaScript/TypeScript + Actions)
+- ✅ **Lighthouse CI**: Performance monitoring with thresholds
+- ✅ **Link Validation**: Linkinator for broken link detection
+
+#### ✅ CI/CD Optimization (Phase 5)
+
+- ✅ **Separate CI/Deploy Workflows**: Better separation of concerns
+- ✅ **Optimized Caching**: Faster builds with intelligent caching
+- ✅ **Fast PR Feedback**: CI runs without deployment overhead
+
+#### 📚 Documentation (Phases 3 & 5)
+
+- ✅ **11 Comprehensive Guides**: Covering all aspects of development and deployment
+- ✅ **Quick Start Guide**: 5-minute setup for new contributors
+- ✅ **Responsive Design Guide**: Mobile-first principles and breakpoints
+- ✅ **Lessons Learned**: Project retrospective and best practices
+
+### Future Enhancement Opportunities
+
+The following enhancements could further improve the test suite:
+
+#### Potential Improvements
+
+- **Visual Regression Testing**: Add Percy or Playwright screenshots for UI change detection
+- **Mobile Device Testing**: Test on real mobile devices via BrowserStack
+- **Cross-Browser Testing**: Add Firefox and WebKit browser testing
+- **Increased Test Coverage**: Target 25-50% coverage for critical components
+- **TypeScript Strict Mode**: Enable additional strict flags
+- **Import Organization**: Add eslint-plugin-import for import sorting
+- **pnpm audit**: Add automated pnpm audit checks to CI with failure threshold
+
+#### Build Quality Gates
+
+- **Bundle Size Analysis**: Add next-bundle-analyzer to track bundle size
+- **Test Coverage Reports**: Add coverage collection and reporting
+- **Performance Budgets**: Set and enforce performance budgets in CI
+
+#### GitHub Actions Enhancements
+
+- **Branch Protection**: Require status checks to pass before merging
+- **Automated PR Comments**: Post test results and coverage to PRs
+- **Deployment Preview**: Add preview deployments for PRs (see detailed guide below)
+- **Cache Optimization**: Improve caching strategy for faster builds
+- **Parallel Testing**: Run test suites in parallel for faster feedback
+
+### Preview Deployments for Static Sites
+
+Preview deployments allow reviewers to see and test changes in a live environment before merging, without needing to clone the repository or run it locally. This is especially valuable for non-technical reviewers.
+
+#### Recommended Options for Nonprofits: Vercel vs Cloudflare Pages
+
+For Free For Charity as a nonprofit organization, we evaluated the best preview deployment platforms based on free tier sustainability and features.
+
+**Platform Comparison for Nonprofits:**
+
+| Feature                           | Vercel                                             | Cloudflare Pages                          |
+| --------------------------------- | -------------------------------------------------- | ----------------------------------------- |
+| **Free Tier Sustainability**      | 🟡 Hobby tier may have future changes              | 🟢 Most likely to remain free             |
+| **Bandwidth Limit**               | 100GB/month                                        | ✅ Unlimited                              |
+| **Build Minutes**                 | 6,000 minutes/month                                | 500 builds/month                          |
+| **Preview Deployments**           | ✅ Unlimited                                       | ✅ Unlimited                              |
+| **Custom Domains**                | ✅ Unlimited                                       | ✅ Unlimited                              |
+| **Next.js Optimization**          | ✅ Excellent (created by Vercel)                   | ✅ Good                                   |
+| **Edge Network**                  | Global CDN                                         | Global CDN (270+ cities)                  |
+| **Nonprofit Program**             | ❌ No specific program                             | ❌ No specific program                    |
+| **Sustainability for Nonprofits** | 🟡 Personal/hobby use, not official nonprofit tier | 🟢 Generous free tier, unlikely to change |
+| **Bot Comments on PRs**           | ✅ Automatic                                       | ✅ Automatic                              |
+| **Build Time (typical)**          | ~2 minutes                                         | ~2-3 minutes                              |
+| **Ease of Setup**                 | 🟢 Very easy (GitHub integration)                  | 🟢 Easy (GitHub integration)              |
+
+**🏆 Recommendation: Cloudflare Pages**
+
+For Free For Charity, **Cloudflare Pages is the better choice** for these reasons:
+
+1. **Most Likely to Stay Free Long-Term**
+   - Cloudflare's business model is built on enterprise customers, not small sites
+   - Unlimited bandwidth makes it sustainable even as traffic grows
+   - No history of restricting free tier features
+
+2. **Unlimited Bandwidth**
+   - Vercel's 100GB/month may become restrictive as the nonprofit grows
+   - Cloudflare has no bandwidth limits on free tier
+   - Better for handling traffic spikes during fundraising campaigns
+
+3. **Better Sustainability Model**
+   - Cloudflare Pages is positioned as a competitive feature, not a revenue source
+   - Vercel's focus on monetization through usage limits may tighten over time
+
+4. **Good Next.js Support**
+   - While Vercel created Next.js, Cloudflare Pages handles static exports excellently
+   - This project uses static export (`output: "export"`), so Vercel's edge runtime advantages don't apply
+
+**⚠️ Vercel Considerations**
+
+Vercel is still a good option if you prioritize:
+
+- Slightly better Next.js-specific tooling
+- Simpler initial setup for Next.js projects
+- Current free tier is adequate for foreseeable traffic
+
+However, the "hobby" designation may be subject to future policy changes, and the 100GB bandwidth limit could become restrictive.
+
+#### Workflow for Creators and Reviewers
+
+Both platforms provide identical workflows:
+
+**Creator:**
+
+1. Create feature branch
+2. Make changes and push to GitHub
+3. Open pull request
+4. Wait for automatic preview deployment (1-3 minutes)
+5. Share preview URL from bot comment
+
+**Reviewer:**
+
+1. Open PR on GitHub
+2. Click preview URL in bot comment
+3. Test the live site in browser (no IDE or local setup needed)
+4. Provide feedback on PR
+5. Changes automatically deploy on new commits
+
+**Coexistence with GitHub Pages:**
+
+- Keep GitHub Pages for production (the default *.github.io URL, or your custom domain if configured)
+- Use Cloudflare Pages or Vercel for PR previews only
+- No conflicts between systems
+
+#### Setting Up Cloudflare Pages (Recommended)
+
+1. **Sign Up/Sign In**
+   - Go to [pages.cloudflare.com](https://pages.cloudflare.com)
+   - Sign in with GitHub (or create Cloudflare account)
+
+2. **Connect Repository**
+   - Click "Create a project" → "Connect to Git"
+   - Select "GitHub" and authorize Cloudflare Pages
+   - Choose this repository
+
+3. **Configure Build Settings**
+   - Framework preset: Select "Next.js (Static HTML Export)"
+   - Build command: `pnpm run build`
+   - Build output directory: `out`
+   - Environment variables: Leave `NEXT_PUBLIC_BASE_PATH` unset
+     - GitHub Pages needs `/FFC-IN-FFC_Single_Page_Template` for subdirectory routing
+     - Cloudflare Pages deploys to root, no basePath needed
+
+4. **Enable Preview Deployments**
+   - In project settings → Builds & deployments
+   - Enable "Enable automatic preview deployments" (should be on by default)
+   - Enable "Enable comments on pull requests"
+
+5. **Deploy**
+   - Click "Save and Deploy"
+   - First build will take 2-3 minutes
+   - Future PR preview deployments are automatic
+
+**Result**: Every PR will have a comment like:
+
+```
+✅ Preview deployed to https://abc123.ffc-template.pages.dev
+🔗 Production: https://ffc-template.pages.dev
+```
+
+#### Setting Up Vercel (Alternative)
+
+If you prefer Vercel:
+
+1. Go to [vercel.com](https://vercel.com) and sign in with GitHub
+2. Click "Add New..." → "Project"
+3. Import this repository
+4. Configure:
+   - Framework Preset: Next.js
+   - Build Command: `pnpm run build`
+   - Output Directory: `out`
+   - Leave `NEXT_PUBLIC_BASE_PATH` unset
+5. Deploy
+
+Vercel automatically enables PR preview deployments and comments.
+
+**Full Testing Guide:** See [TESTING.md](./TESTING.md) for complete documentation.
+
+**Security Documentation:** See [SECURITY.md](./SECURITY.md) for branch protection rules and security best practices.
+
+## Key Features
+
+- **Single-Page Architecture:** One main scrollable page with multiple sections plus 7 policy pages
+- **Component Library:** 23 component files organized by feature/section
+- **Responsive Navigation:** Mobile and desktop navigation with Header/Footer components
+- **Cookie Consent System:** GDPR-compliant cookie consent management
+- **SEO Optimization:**
+  - Global metadata in `src/app/layout.tsx` (title template, description, OG/Twitter, robots)
+  - Dynamic sitemap: `src/app/sitemap.ts`
+  - Robots configuration: `src/app/robots.ts`
+- **Static Site Generation:** Full static export for GitHub Pages deployment
+- **TypeScript:** Full TypeScript implementation for type safety
+- **Modern Styling:** Tailwind CSS 4.x with utility-first approach
+- **Animation:** Framer Motion for smooth transitions
+- **Icons:** Lucide React and React Icons libraries
+- **Carousels:** Swiper for image carousels and sliders
+
+**Note:**
+
+- This is a single-page application where all main content is displayed on one scrollable page with navigation anchors
+- Global Donate/Volunteer popup system is present in codebase but currently commented out in `layout.tsx`
+- Components are organized by feature/section but rendered within the single homepage
+
+## Project Structure
+
+**IMPORTANT:** When updating this structure, ALWAYS show all items fully. When new pages or folders are added, explicitly list them here. Do NOT use placeholders like `[policy-pages]` or `[feature]` - show the actual folder names.
+
+```
+src/
+├── app/                                        # Next.js App Router
+│   ├── page.tsx                               # Main entry point (loads homepage)
+│   ├── layout.tsx                             # Root layout with global config
+│   ├── globals.css                            # Global styles
+│   ├── home-page/                             # Homepage sections (single-page structure)
+│   ├── cookie-policy/                         # Cookie Policy page
+│   ├── donation-policy/                       # Donation Policy page
+│   ├── free-for-charity-donation-policy/      # Free For Charity Donation Policy page
+│   ├── privacy-policy/                        # Privacy Policy page
+│   ├── security-acknowledgements/             # Security Acknowledgements page
+│   ├── terms-of-service/                      # Terms of Service page
+│   ├── vulnerability-disclosure-policy/       # Vulnerability Disclosure Policy page
+│   ├── sitemap.ts                             # Dynamic sitemap generation
+│   └── robots.ts                              # Robots.txt configuration
+├── components/                                # Reusable components
+│   ├── header/                                # Site header/navigation
+│   ├── footer/                                # Site footer
+│   ├── cookie-consent/                        # Cookie consent banner
+│   ├── google-tag-manager/                    # Analytics integration
+│   ├── seo/                                   # SEO / structured data (JSON-LD)
+│   ├── ui/                                    # Reusable UI components
+│   └── home-page/                             # Homepage section components
+├── data/                                      # Static content
+│   ├── faqs/                                  # FAQ JSON files
+│   ├── team/                                  # Team member data
+│   └── testimonials/                          # Testimonial data
+├── lib/                                       # Utility functions
+│   └── assetPath.ts                           # Helper for GitHub Pages basePath support
+└── public/                                    # Static assets (icons, images, fonts)
+```
+
+## Site Improvements & Capability Gaps
+
+A comprehensive technical analysis comparing this repository to sister sites (freeforcharity-web, ffcadmin.org, KCCF-web) is available in **[SITE_IMPROVEMENTS.md](./SITE_IMPROVEMENTS.md)**.
+
+This document identifies:
+
+- 19 technical capability gaps
+- Detailed implementation guidance for each gap
+- Priority recommendations and implementation roadmap
+- Estimated effort and complexity for each improvement
+
+**Key improvement opportunities:**
+
+- CodeQL security scanning
+- Unit testing with Jest
+- Code formatting with Prettier
+- Lighthouse CI performance monitoring
+- Dark mode theming
+- Enhanced documentation suite
+- And more...
+
+## Common Tasks
+
+- Update homepage content: edit `src/app/page.tsx`
+- Change CTA copy: update text in components under `src/app/components`
+- Adjust SEO: edit `metadata` in `src/app/layout.tsx`
+
+## Deployment Details
+
+The site is configured for static export and deployed to GitHub Pages:
+
+**Production:**
+
+- Live at the GitHub Pages default URL: [https://freeforcharity.github.io/FFC-IN-FFC_Single_Page_Template/](https://freeforcharity.github.io/FFC-IN-FFC_Single_Page_Template/)
+- No custom domain is configured — this proves the full pipeline (build, deploy, post-deploy smoke, live footer checks) works without one
+- Deployment: Automatic via GitHub Actions (`.github/workflows/deploy.yml`)
+- Trigger: Push to `main` branch
+- Build output: Static files in `./out` directory
+
+**Local preview of production build:**
+
+```bash
+pnpm run build    # Build static site
+pnpm run preview  # Preview at http://localhost:3000
+```
+
+**Note:** The build process uses `output: "export"` in `next.config.ts` for static site generation compatible with GitHub Pages.
+
+## Notes
+
+- When adding new pages, update `sitemap.ts` to include them in the sitemap
+- Static export configuration in `next.config.ts` supports GitHub Pages deployment with basePath
+- Cookie consent implementation tracks user preferences in localStorage
+- All images use `unoptimized` setting for static export compatibility
+- ESLint warnings about `<img>` tags are expected and acceptable for static export configuration
+
+## Contributing
+
+### New Contributor? Start with a Fresh Review!
+
+We welcome new contributors and believe fresh perspectives are invaluable! **Your first contribution should be a comprehensive review of our live application.**
+
+#### Why Start with a Review?
+
+- 🔍 **Identify issues** that experienced contributors might overlook
+- 📝 **Learn the project** thoroughly before diving into code
+- 💡 **Provide value** immediately with your unique perspective
+- 🎯 **Build familiarity** with features and architecture
+
+#### How to Get Started
+
+1. **Explore the live site:** [https://freeforcharity.github.io/FFC-IN-FFC_Single_Page_Template/](https://freeforcharity.github.io/FFC-IN-FFC_Single_Page_Template/)
+2. **Test thoroughly:** Try all features, navigation, and responsive behavior
+3. **Document findings:** Create a review issue using our template
+4. **Report issues:** File separate issues for bugs and enhancements you discover
+
+#### Create Your Review Issue
+
+Use our **Reviewer Onboarding template** to document your findings:
+
+[**Create Reviewer Onboarding Issue**](https://github.com/FreeForCharity/FFC-IN-FFC_Single_Page_Template/issues/new?assignees=&labels=documentation%2Creview%2Conboarding&template=reviewer-onboarding.md)
+
+The template guides you through:
+
+- Areas to evaluate (functionality, design, performance, accessibility)
+- How to document findings
+- Creating individual bug/enhancement issues
+- Providing constructive feedback
+
+#### Detailed Instructions
+
+For complete guidance on performing a fresh review, see the **[Reviewer Onboarding section in CONTRIBUTING.md](./CONTRIBUTING.md#reviewer-onboarding)**.
+
+#### After Your Review
+
+Once your review is complete:
+
+- Engage with maintainers on your findings
+- Choose issues you'd like to help fix
+- Start contributing code improvements
+- Help review other contributions
+
+**Ready to help make Free For Charity better? Start your review today!**
+
+---
+
+## Documentation
+
+For comprehensive guides and documentation:
+
+### Getting Started
+
+- **[README.md](./README.md)** - Project overview, setup, and deployment (this file)
+- **[QUICK_START.md](./QUICK_START.md)** - ⚡ 5-minute setup guide for new contributors
+- **[TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md)** - 🎯 **Complete guide for using this repository as a template**
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Guidelines for contributing to the project
+
+### Development & Testing
+
+- **[TESTING.md](./TESTING.md)** - Complete testing guide (Jest unit tests + Playwright E2E tests)
+- **[CODE_QUALITY.md](./CODE_QUALITY.md)** - Code quality standards, linting, and best practices
+- **[RESPONSIVE_DESIGN.md](./RESPONSIVE_DESIGN.md)** - Responsive design principles, breakpoints, and mobile-first approach
+
+### Deployment & Operations
+
+- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Comprehensive deployment guide for GitHub Pages
+- **[LIGHTHOUSE.md](./LIGHTHOUSE.md)** - Performance monitoring with Lighthouse CI
+- **[SECURITY.md](./SECURITY.md)** - Security policies, branch protection rules, and best practices
+- **[DEPENDABOT.md](./DEPENDABOT.md)** - Automated dependency management and security updates
+
+### Feature Implementation Guides
+
+- **[FACEBOOK_EVENTS_SUMMARY.md](./FACEBOOK_EVENTS_SUMMARY.md)** - 📋 Executive summary and decision guide for Facebook Events integration
+- **[FACEBOOK_EVENTS_REQUIREMENTS.md](./FACEBOOK_EVENTS_REQUIREMENTS.md)** - Complete requirements analysis for Facebook Events integration
+- **[FACEBOOK_EVENTS_SETUP.md](./FACEBOOK_EVENTS_SETUP.md)** - Step-by-step implementation guide for adding Facebook Events section
+
+### Troubleshooting & Planning
+
+- **[ISSUE_RESOLUTION.md](./ISSUE_RESOLUTION.md)** - Common issues, troubleshooting, and FAQ
+- **[LESSONS_LEARNED.md](./LESSONS_LEARNED.md)** - Project retrospective, what worked, what didn't
+- **[SITE_IMPROVEMENTS.md](./SITE_IMPROVEMENTS.md)** - ✅ Phase 5 Complete: Technical analysis showing repository comparison and implemented improvements
+- **[TECHNICAL_DEBT.md](./TECHNICAL_DEBT.md)** - Consolidated tracking of technical debt items, security vulnerabilities, and future refactoring plans

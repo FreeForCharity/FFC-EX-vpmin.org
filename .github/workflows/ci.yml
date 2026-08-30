@@ -1,0 +1,116 @@
+name: CI - Build and Test
+
+on:
+  # Runs on all pull requests
+  pull_request:
+    branches: ['main']
+
+  # Runs on pushes to main (before deploy)
+  push:
+    branches: ['main']
+
+  # Allows manual trigger from Actions tab
+  workflow_dispatch:
+
+# Cancel in-progress CI runs for the same PR/branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    name: Test and Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        run: pnpm run format:check
+
+      - name: Run linting
+        run: pnpm run lint
+
+      - name: Run unit tests
+        run: pnpm test
+        env:
+          CI: true
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Build Next.js site
+        run: pnpm run build
+        # Note: Do NOT set NEXT_PUBLIC_BASE_PATH here
+        # The basePath is only needed for actual GitHub Pages deployment (in deploy.yml)
+        # E2E tests need to run against a build without basePath since the test server
+        # (serve -s out) doesn't understand basePath routing
+
+      - name: Verify build output
+        # Fails the build if any indexable page is missing its single <h1> or a
+        # per-page canonical (invariants a rebrand often breaks in rendered HTML).
+        run: pnpm run verify:build
+
+      - name: Check bundle size
+        # Reuses the build above — fails if shipped JS exceeds the gzipped budget.
+        run: pnpm run check:bundle
+
+      - name: Run E2E tests
+        run: pnpm run test:e2e
+        env:
+          CI: true
+
+      - name: Upload build artifacts (for debugging)
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-output
+          path: |
+            .next/
+            out/
+          retention-days: 7
+
+  link-check:
+    name: Link check (soft-fail)
+    runs-on: ubuntu-latest
+    # Soft-fail today so we can see what linkinator surfaces without
+    # blocking merges. Flip to hard-fail once the noise is understood
+    # — tracked as a follow-up to #289.
+    continue-on-error: true
+    # Kept as a separate job (not inside test-and-build) so it does not
+    # multiply across the Playwright shard matrix introduced by #133.
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Next.js site
+        run: pnpm run build
+
+      - name: Check for broken links
+        run: pnpm run check-links

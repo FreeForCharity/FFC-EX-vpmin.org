@@ -1,0 +1,21 @@
+#!/bin/sh
+# Run formatting check first
+pnpm run format:check || {
+  echo "❌ Code formatting issues detected. Please run 'pnpm run format' to fix."
+  exit 1
+}
+
+# Run linting
+pnpm run lint || {
+  echo "❌ Linting errors detected. Please fix the errors and try again."
+  exit 1
+}
+
+# Run FFC best-practices drift check (kebab-case routes, assetPath usage,
+# committed secrets, placeholder URLs). See scripts/check-drift.mjs.
+pnpm run check:drift || {
+  echo "❌ FFC drift check failed. See messages above for details."
+  exit 1
+}
+
+echo "✅ Pre-commit checks passed!"
