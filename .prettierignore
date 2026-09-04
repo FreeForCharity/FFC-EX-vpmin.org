@@ -30,3 +30,5 @@ playwright-report
 .DS_Store
 *.pem
 DEPENDABOT.md
+# Static WordPress clone assets (not source)
+public/
