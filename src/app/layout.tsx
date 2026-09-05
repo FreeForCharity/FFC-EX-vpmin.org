@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Header from './../components/header'
-import Footer from './../components/footer'
+import FfcFooter from './../components/ffc-footer'
+import CloneEnhance from './../components/clone-enhance'
 import CookieConsent from './../components/cookie-consent'
 import GoogleTagManager, { GoogleTagManagerNoScript } from './../components/google-tag-manager'
 import { siteConfig, siteUrl, twitterSite, cardDescription } from '@/lib/site.config'
@@ -83,10 +83,14 @@ export default function RootLayout({
             Production sites should sit behind Cloudflare/Netlify so the
             frame-ancestors directive in public/_headers takes effect.
             Keep the rest of this list aligned with public/_headers —
-            third-party origins must be added to BOTH. */}
+            third-party origins must be added to BOTH (check:drift fails if
+            they diverge). anchor.fm and biblegateway.com are in frame-src
+            because the charity's own podcast episodes and scripture readings
+            are embedded from them; without the entry the browser refuses the
+            frame and the page shows an empty box. */}
         <meta
           httpEquiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://www.clarity.ms https://*.clarity.ms https://widgets.guidestar.org https://connect.facebook.net https://www.zeffy.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://stats.g.doubleclick.net https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms; frame-src https://www.googletagmanager.com https://www.zeffy.com https://widgets.guidestar.org https://www.facebook.com https://forms.office.com https://forms.microsoft.com https://www.youtube.com https://www.youtube-nocookie.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://www.zeffy.com https://forms.office.com; upgrade-insecure-requests"
+          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://www.clarity.ms https://*.clarity.ms https://widgets.guidestar.org https://connect.facebook.net https://www.zeffy.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://stats.g.doubleclick.net https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms; frame-src https://www.googletagmanager.com https://www.zeffy.com https://widgets.guidestar.org https://www.facebook.com https://forms.office.com https://forms.microsoft.com https://www.youtube.com https://www.youtube-nocookie.com https://anchor.fm https://www.biblegateway.com; media-src 'self' blob: https:; object-src 'none'; base-uri 'self'; form-action 'self' https://www.zeffy.com https://forms.office.com; upgrade-insecure-requests"
         />
         <meta name="referrer" content="strict-origin-when-cross-origin" />
         <meta name="color-scheme" content="light" />
@@ -104,14 +108,6 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://www.clarity.ms" />
         <link rel="dns-prefetch" href="https://connect.facebook.net" />
-
-        {/* Preload critical LCP image */}
-        <link
-          rel="preload"
-          as="image"
-          href={assetPath('/Images/figma-hero-img.webp')}
-          fetchPriority="high"
-        />
 
         {/* Google Consent Mode v2 defaults. MUST execute before any Google
             tag loads, which is why it is an inline <head> script placed
@@ -136,11 +132,21 @@ export default function RootLayout({
         <a href="#main-content" className="skip-to-content">
           Skip to main content
         </a>
-        <Header />
+        {/* The converted pages carry the charity's own header, navigation and
+            footer — that IS the site's design, and rendering the FFC template's
+            Header above it would put two navigations and two banners on every
+            page. So the template chrome is omitted here and every FFC technical
+            feature is kept: metadata and canonicals from each route, the CSP,
+            GTM and Consent Mode above, the fonts, the favicon, cookie consent,
+            and the FFC attribution footer below.
+
+            <main> lives here rather than in the pages so there is exactly one
+            of it site-wide and the skip link always has a target. */}
         <main id="main-content" tabIndex={-1}>
           {children}
         </main>
-        <Footer />
+        <FfcFooter />
+        <CloneEnhance />
         <CookieConsent />
       </body>
     </html>

@@ -4,9 +4,11 @@
       "staticDistDir": "./out",
       "url": [
         "http://localhost/index.html",
-        "http://localhost/cookie-policy.html",
-        "http://localhost/privacy-policy.html",
-        "http://localhost/terms-of-service.html"
+        "http://localhost/about-us/index.html",
+        "http://localhost/podcast/index.html",
+        "http://localhost/cookie-policy/index.html",
+        "http://localhost/privacy-policy/index.html",
+        "http://localhost/terms-of-service/index.html"
       ],
       "numberOfRuns": 3,
       "settings": {
