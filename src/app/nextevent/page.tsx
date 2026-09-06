@@ -10,7 +10,6 @@ export const metadata: Metadata = {
     description: 'Next Event | Viewpoint Ministries International',
     canonical: '/nextevent/',
   }),
-  description: undefined,
   title: { absolute: 'Next Event | Viewpoint Ministries International' },
 }
 

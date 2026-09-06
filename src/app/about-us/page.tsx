@@ -10,7 +10,6 @@ export const metadata: Metadata = {
     description: 'About Us | Viewpoint Ministries International',
     canonical: '/about-us/',
   }),
-  description: undefined,
   title: { absolute: 'About Us | Viewpoint Ministries International' },
 }
 
