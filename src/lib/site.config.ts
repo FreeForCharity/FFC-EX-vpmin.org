@@ -179,7 +179,11 @@ export const siteConfig: SiteConfig = {
     'Microsoft 365',
   ],
   themeColor: '#ffffff',
-  vulnerabilityDisclosurePath: '/vulnerability-disclosure-policy',
+  // Trailing slash to match next.config's `trailingSlash: true`: the export
+  // writes vulnerability-disclosure-policy/index.html, so the slashless form
+  // only resolves via a host-specific directory fallback (a 301 on GitHub
+  // Pages). error.tsx and not-found.tsx link straight here.
+  vulnerabilityDisclosurePath: '/vulnerability-disclosure-policy/',
   social: [
     { label: 'Facebook', href: 'https://www.facebook.com/freeforcharity' },
     { label: 'X (Twitter)', href: 'https://x.com/freeforcharity1' },
