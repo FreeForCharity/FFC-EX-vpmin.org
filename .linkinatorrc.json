@@ -9,6 +9,7 @@
     "^https://www.instagram.com/.*",
     "^https://www.pinterest.com/.*",
     "^https://forms.monday.com/.*",
+    "^https://anchor\\.fm/s/\\d+/podcast/rss",
     "^mailto:.*",
     "^tel:.*"
   ],
