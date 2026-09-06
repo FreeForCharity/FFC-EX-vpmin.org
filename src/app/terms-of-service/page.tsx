@@ -3,7 +3,9 @@ import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema'
 import { pageMetadata } from '@/lib/page-metadata'
 
 const PAGE_NAME = 'Terms of Service'
-const CANONICAL_PATH = '/terms-of-service'
+// Trailing slash to match next.config's `trailingSlash: true` — the export
+// writes terms-of-service/index.html and nothing answers at /terms-of-service.
+const CANONICAL_PATH = '/terms-of-service/'
 
 // Bare page name as title (the root layout template appends the brand);
 // per-page OG/Twitter handling is documented in src/lib/page-metadata.ts.

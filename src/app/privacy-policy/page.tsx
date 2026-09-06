@@ -4,7 +4,9 @@ import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema'
 import { pageMetadata } from '@/lib/page-metadata'
 
 const PAGE_NAME = 'Privacy Policy'
-const CANONICAL_PATH = '/privacy-policy'
+// Trailing slash to match next.config's `trailingSlash: true` — the export
+// writes privacy-policy/index.html and nothing answers at /privacy-policy.
+const CANONICAL_PATH = '/privacy-policy/'
 
 // Bare page name as title (the root layout template appends the brand);
 // per-page OG/Twitter handling is documented in src/lib/page-metadata.ts.

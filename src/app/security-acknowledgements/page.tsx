@@ -5,7 +5,9 @@ import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema'
 import { pageMetadata } from '@/lib/page-metadata'
 
 const PAGE_NAME = 'Security Acknowledgements'
-const CANONICAL_PATH = '/security-acknowledgements'
+// Trailing slash to match next.config's `trailingSlash: true` — the export
+// writes security-acknowledgements/index.html and nothing answers at /security-acknowledgements.
+const CANONICAL_PATH = '/security-acknowledgements/'
 
 // Bare page name as title (the root layout template appends the brand);
 // per-page OG/Twitter handling is documented in src/lib/page-metadata.ts.

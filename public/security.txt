@@ -9,10 +9,10 @@
 # reachable file via the root. RFC 9116 §2.5.2 allows multiple Canonical
 # lines to advertise both URLs.
 
-Contact: mailto:security@freeforcharity.org
+Contact: mailto:info@viewpointministriesinternational.org
 Expires: 2027-01-01T00:00:00.000Z
 Preferred-Languages: en
-Canonical: https://freeforcharity.github.io/FFC-IN-FFC_Single_Page_Template/.well-known/security.txt
-Canonical: https://freeforcharity.github.io/FFC-IN-FFC_Single_Page_Template/security.txt
-Policy: https://freeforcharity.github.io/FFC-IN-FFC_Single_Page_Template/vulnerability-disclosure-policy
-Acknowledgments: https://freeforcharity.github.io/FFC-IN-FFC_Single_Page_Template/security-acknowledgements
+Canonical: https://freeforcharity.github.io/FFC-EX-vpmin.org/.well-known/security.txt
+Canonical: https://freeforcharity.github.io/FFC-EX-vpmin.org/security.txt
+Policy: https://freeforcharity.github.io/FFC-EX-vpmin.org/vulnerability-disclosure-policy/
+Acknowledgments: https://freeforcharity.github.io/FFC-EX-vpmin.org/security-acknowledgements/

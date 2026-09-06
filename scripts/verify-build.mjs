@@ -12,6 +12,13 @@
  *   2. Every indexable page has a self-referential <link rel="canonical">
  *      (per-page canonical, not the homepage's — the App Router inheritance
  *      trap).
+ *   3. Every indexable page has a non-empty <meta name="description">.
+ *      Added after a metadata refactor set `description: undefined` on two
+ *      routes: Next's shallow merge deleted a description that had been set,
+ *      and the pages shipped without one. Lighthouse caught it — but only
+ *      because /about-us/ happens to be one of the nine pages it audits. On
+ *      any of the other 587 it would have shipped silently, which is what
+ *      this file is for.
  *
  * Run: `npm run build` first, then `node scripts/verify-build.mjs`
  * (or `npm run verify:build`). Exits non-zero on any violation.
@@ -72,17 +79,29 @@ for (const page of pages) {
   if (!/<link[^>]+rel="canonical"/i.test(html)) {
     errors.push(`${rel}: missing <link rel="canonical">.`)
   }
+
+  // Absent and present-but-empty are both failures: an empty description is
+  // what a `?? ''` fallback produces, and it satisfies a presence check while
+  // telling a crawler nothing.
+  const desc = html.match(/<meta[^>]+name="description"[^>]*>/i)?.[0]
+  if (!desc) {
+    errors.push(`${rel}: missing <meta name="description">.`)
+  } else if (!/content="[^"]+"/i.test(desc)) {
+    errors.push(`${rel}: <meta name="description"> is empty.`)
+  }
 }
 
 if (errors.length) {
   console.error('\n❌ Built-output verification failed:')
   for (const e of errors) console.error('  - ' + e)
   console.error(
-    '\nFix the page source (one <h1> per page; a per-page alternates.canonical) and rebuild.'
+    '\nFix the page source (one <h1> per page; a per-page alternates.canonical;\n' +
+      'a non-empty description) and rebuild.'
   )
   process.exit(1)
 }
 
 console.log(
-  `\n✅ Built-output verified — ${pages.length} pages each have one <h1> and a canonical.`
+  `\n✅ Built-output verified — ${pages.length} pages each have one <h1>, a canonical` +
+    ' and a non-empty meta description.'
 )

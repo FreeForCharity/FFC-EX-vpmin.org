@@ -4,7 +4,9 @@ import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema'
 import { pageMetadata } from '@/lib/page-metadata'
 
 const PAGE_NAME = 'Cookie Policy'
-const CANONICAL_PATH = '/cookie-policy'
+// Trailing slash to match next.config's `trailingSlash: true` — the export
+// writes cookie-policy/index.html and nothing answers at /cookie-policy.
+const CANONICAL_PATH = '/cookie-policy/'
 
 // Bare page name as title (the root layout template appends the brand);
 // per-page OG/Twitter handling is documented in src/lib/page-metadata.ts.

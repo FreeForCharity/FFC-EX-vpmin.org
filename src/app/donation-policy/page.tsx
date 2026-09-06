@@ -3,7 +3,9 @@ import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema'
 import { pageMetadata } from '@/lib/page-metadata'
 
 const PAGE_NAME = 'Donation Policy'
-const CANONICAL_PATH = '/donation-policy'
+// Trailing slash to match next.config's `trailingSlash: true` — the export
+// writes donation-policy/index.html and nothing answers at /donation-policy.
+const CANONICAL_PATH = '/donation-policy/'
 
 // Bare page name as title (the root layout template appends the brand);
 // per-page OG/Twitter handling is documented in src/lib/page-metadata.ts.

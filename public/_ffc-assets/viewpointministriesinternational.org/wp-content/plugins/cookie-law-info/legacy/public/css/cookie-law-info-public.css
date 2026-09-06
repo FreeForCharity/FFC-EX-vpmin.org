@@ -1,0 +1,123 @@
+.ffc-clone #cookie-law-info-bar {
+	font-size: 15px;
+	margin: 0 auto;
+	padding: 12px 10px;
+	position: absolute;
+	text-align: center;
+	box-sizing: border-box;
+	width:100%;
+	z-index: 9999;
+	/* box-shadow:rgba(0,0,0,.5) 0px 5px 50px; */
+	display: none;
+	left:0px;
+	font-weight:300;
+	box-shadow: 0 -1px 10px 0 rgba(172, 171, 171, 0.3);
+}
+.ffc-clone #cookie-law-info-again {
+	font-size: 10pt;
+	margin: 0;
+	padding:5px 10px;
+	text-align: center;
+	z-index: 9999;
+	cursor: pointer;
+	box-shadow: #161616 2px 2px 5px 2px;
+}
+.ffc-clone #cookie-law-info-bar span {
+	vertical-align: middle;
+}
+
+.ffc-clone /** Buttons (http://papermashup.com/demos/css-buttons) */
+.cli-plugin-button, .ffc-clone .cli-plugin-button:visited {
+	display: inline-block;
+	padding: 9px 12px;
+	color: #fff;
+	text-decoration: none;
+	position: relative;
+	cursor: pointer;
+	margin-left: 5px;
+	text-decoration: none;
+}
+.ffc-clone .cli-plugin-main-link {
+	margin-left:0px;
+	font-weight: 550; text-decoration: underline;
+}
+.ffc-clone .cli-plugin-button:hover {
+	background-color: #111;
+	color: #fff;
+	text-decoration: none;
+}
+.ffc-clone .small.cli-plugin-button, .ffc-clone .small.cli-plugin-button:visited {
+	font-size: 11px;
+}
+.ffc-clone .cli-plugin-button, .ffc-clone .cli-plugin-button:visited,
+	.ffc-clone .medium.cli-plugin-button, .ffc-clone .medium.cli-plugin-button:visited {
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 1;
+}
+.ffc-clone .large.cli-plugin-button, .ffc-clone .large.cli-plugin-button:visited {
+	font-size: 14px;
+	padding: 8px 14px 9px;
+}
+.ffc-clone .super.cli-plugin-button, .ffc-clone .super.cli-plugin-button:visited {
+	font-size: 34px;
+	padding: 8px 14px 9px;
+}
+.ffc-clone .pink.cli-plugin-button, .ffc-clone .magenta.cli-plugin-button:visited {
+	background-color: #e22092;
+}
+.ffc-clone .pink.cli-plugin-button:hover {
+	background-color: #c81e82;
+}
+.ffc-clone .green.cli-plugin-button, .ffc-clone .green.cli-plugin-button:visited {
+	background-color: #91bd09;
+}
+.ffc-clone .green.cli-plugin-button:hover {
+	background-color: #749a02;
+}
+.ffc-clone .red.cli-plugin-button, .ffc-clone .red.cli-plugin-button:visited {
+	background-color: #e62727;
+}
+.ffc-clone .red.cli-plugin-button:hover {
+	background-color: #cf2525;
+}
+.ffc-clone .orange.cli-plugin-button, .ffc-clone .orange.cli-plugin-button:visited {
+	background-color: #ff5c00;
+}
+.ffc-clone .orange.cli-plugin-button:hover {
+	background-color: #d45500;
+}
+.ffc-clone .blue.cli-plugin-button, .ffc-clone .blue.cli-plugin-button:visited {
+	background-color: #2981e4;
+}
+.ffc-clone .blue.cli-plugin-button:hover {
+	background-color: #2575cf;
+}
+.ffc-clone .yellow.cli-plugin-button, .ffc-clone .yellow.cli-plugin-button:visited {
+	background-color: #ffb515;
+}
+.ffc-clone .yellow.cli-plugin-button:hover {
+	background-color: #fc9200;
+}
+.ffc-clone .cli-plugin-button{ margin-top:5px; }
+.ffc-clone .cli-bar-popup{
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding;
+	background-clip: padding-box;
+	-webkit-border-radius:30px;
+	-moz-border-radius:30px;
+	border-radius:30px;
+	padding:20px;
+}
+.ffc-clone .cli-powered_by_p{width:100% !important; display:block !important; color:#333; clear:both; font-style:italic !important; font-size:12px !important; margin-top:15px !important; }
+.ffc-clone .cli-powered_by_a{color:#333; font-weight:600 !important; font-size:12px !important;}
+
+.ffc-clone /**
+ * Added extra space between each cookie bar action elements @since 1.8.9
+ */
+.cli-plugin-main-link.cli-plugin-button {
+	text-decoration: none;
+}
+.ffc-clone .cli-plugin-main-link.cli-plugin-button {
+	margin-left: 5px;
+}
