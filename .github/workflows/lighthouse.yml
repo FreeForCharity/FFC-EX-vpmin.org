@@ -170,7 +170,7 @@ jobs:
         # and fail the whole run — skip the step there (scores remain in the
         # workflow log and artifacts).
         if: always() && github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             async function run() {
