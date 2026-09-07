@@ -476,46 +476,117 @@ jobs:
           echo "✓ Title contains expected fragment: $EXPECTED_TITLE_FRAGMENT"
 
       - name: Sitemap routes 200-check (every URL in sitemap.xml must HTTPS-resolve)
-        # Apex mode only: sitemaps emit apex URLs; on the default Pages URL the
-        # basePath-prefixed rewrite would false-negative.
-        if: steps.url.outputs.mode == 'apex'
+        # Runs in BOTH modes. It used to be apex-only, on the reasoning that
+        # "sitemaps emit apex URLs, so on the default Pages URL the
+        # basePath-prefixed rewrite would false-negative". That is a real case,
+        # but it is a property of the sitemap, not of the mode: src/app/
+        # sitemap.ts folds NEXT_PUBLIC_BASE_PATH into every <loc>, so on a
+        # subpath deploy the paths already carry it and the host-only rewrite
+        # below is exactly right. The prefix comparison further down tells the
+        # two situations apart by measuring, rather than skipping the check on
+        # every subpath deploy — which on this repo left 594 routes that no run
+        # had ever verified.
+        if: steps.url.outputs.skip != 'true'
         env:
           URL: ${{ steps.url.outputs.url }}
         run: |
           set -euo pipefail
           base="${URL%/}"
           sitemap_url="${base}/sitemap.xml"
-          sitemap=$(curl -s --max-time 30 -L "$sitemap_url" || true)
-          if ! echo "$sitemap" | grep -q "<loc>"; then
-            echo "::notice::No sitemap.xml found at $sitemap_url — skipping per-route check"
+
+          # Fetch status and body separately, and let each outcome say what it
+          # is. The previous form was `sitemap=$(curl … || true)` followed by a
+          # grep whose failure printed "No sitemap.xml found — skipping" and
+          # exited 0, so a transport error, a 5xx, an unparseable body and a
+          # genuinely absent sitemap were indistinguishable and all four scored
+          # as a pass. Only a 404 is now a skip; everything else is reported.
+          set +e
+          http=$(curl -s --max-time 60 -L "$sitemap_url" -o /tmp/sitemap.xml -w '%{http_code}')
+          rc=$?
+          set -e
+          if [ "$rc" -ne 0 ]; then
+            echo "::error::curl exit $rc fetching $sitemap_url — the per-route check could not run"
+            exit 1
+          fi
+          bytes=$(wc -c < /tmp/sitemap.xml)
+          echo "GET $sitemap_url -> HTTP $http, $bytes bytes"
+          if [ "$http" = "404" ]; then
+            echo "::notice::No sitemap.xml published at $sitemap_url (HTTP 404) — skipping per-route check"
             exit 0
           fi
-          # Extract each <loc>, normalize to base host
-          mapfile -t locs < <(echo "$sitemap" | grep -oE "<loc>[^<]+</loc>" | sed -E 's/<\/?loc>//g')
-          host=$(echo "$base" | sed -E 's#^https?://([^/]+).*#\1#')
-          fail=0
-          checked=0
+          if [ "$http" != "200" ]; then
+            echo "::error::$sitemap_url returned HTTP $http"
+            exit 1
+          fi
+
+          mapfile -t locs < <(grep -oE "<loc>[^<]+</loc>" /tmp/sitemap.xml | sed -E 's#</?loc>##g')
+          expected=${#locs[@]}
+          if [ "$expected" -eq 0 ]; then
+            echo "::error::$sitemap_url is HTTP 200 and $bytes bytes but contains no <loc> element"
+            echo "First 400 bytes of what was served:"
+            head -c 400 /tmp/sitemap.xml
+            exit 1
+          fi
+          echo "Sitemap lists $expected URLs"
+
+          # Where the site is actually served, as a path prefix: '' on a custom
+          # domain, '/FFC-EX-<domain>' on the default Pages URL.
+          # Origin, not just the host: the scheme comes from the smoke target
+          # rather than being hardcoded, so the loop below addresses exactly the
+          # site that was probed (and can be exercised against a local server).
+          origin=$(printf '%s' "$base" | sed -E 's#^(https?://[^/]+).*#\1#')
+          prefix=$(printf '%s' "$base" | sed -E 's#^https?://[^/]*##')
+
+          outside=0
+          : > /tmp/sitemap-paths.txt
           for loc in "${locs[@]}"; do
-            # Replace whatever host the sitemap emitted with our actual host
-            path=$(echo "$loc" | sed -E 's#^https?://[^/]+##')
-            [ -z "$path" ] && path="/"
-            url="https://${host}${path}"
-            code=$(curl -sI --max-time 15 -L "$url" -o /dev/null -w "%{http_code}" 2>&1 || echo "000")
-            if [ "$code" != "200" ]; then
-              # Try toggling trailing slash (some sitemaps drift from served form)
-              if [[ "$path" == */ ]]; then alt="${path%/}"; else alt="${path}/"; fi
-              code2=$(curl -sI --max-time 15 -L "https://${host}${alt}" -o /dev/null -w "%{http_code}" 2>&1 || echo "000")
-              if [ "$code2" = "200" ]; then
-                echo "::warning::Sitemap drift: $path emits $code but $alt is $code2"
-              else
-                echo "::error::Sitemap route $path returns $code (alt $alt → $code2)"
-                fail=$((fail + 1))
-              fi
-            fi
-            checked=$((checked + 1))
+            p=$(printf '%s' "$loc" | sed -E 's#^https?://[^/]*##')
+            [ -z "$p" ] && p="/"
+            case "$p" in
+              "$prefix"/*|"$prefix") printf '%s\n' "$p" >> /tmp/sitemap-paths.txt ;;
+              *) outside=$((outside + 1)) ;;
+            esac
           done
-          echo "Checked $checked routes; $fail failed"
-          if [ "$fail" -gt 0 ]; then exit 1; fi
+
+          # Every URL outside the served prefix: the pre-cutover case the old
+          # apex gate was really guarding — an apex sitemap being smoke-tested
+          # at the subpath. Say so instead of silently passing.
+          if [ "$outside" -eq "$expected" ]; then
+            echo "::warning::All $expected sitemap URLs sit outside the served prefix '${prefix:-/}' — the sitemap is built for a different base than this smoke target. Skipping per-route check."
+            exit 0
+          fi
+          if [ "$outside" -gt 0 ]; then
+            echo "::error::$outside of $expected sitemap URLs sit outside the served prefix '${prefix:-/}' — the sitemap advertises addresses this deploy does not serve"
+            exit 1
+          fi
+
+          # 594 sequential HEADs would take minutes; 8 at a time keeps it under
+          # a minute without hammering Pages.
+          xargs -P 8 -I{} bash -c '
+            path="$1"; origin="$2"
+            code=$(curl -sI --max-time 20 -L "${origin}${path}" -o /dev/null -w "%{http_code}") || code=000
+            if [ "$code" = "200" ]; then echo "OK|$path|$code||"; exit 0; fi
+            if [ "${path%/}" = "$path" ]; then alt="${path}/"; else alt="${path%/}"; fi
+            code2=$(curl -sI --max-time 20 -L "${origin}${alt}" -o /dev/null -w "%{http_code}") || code2=000
+            if [ "$code2" = "200" ]; then echo "DRIFT|$path|$code|$alt|$code2"; else echo "FAIL|$path|$code|$alt|$code2"; fi
+          ' _ {} "$origin" < /tmp/sitemap-paths.txt > /tmp/routecheck.txt
+
+          awk -F'|' '$1=="DRIFT"{print "::warning::Sitemap drift: " $2 " emits " $3 " but " $4 " is " $5}' /tmp/routecheck.txt
+          awk -F'|' '$1=="FAIL"{print "::error::Sitemap route " $2 " returns " $3 " (alt " $4 " -> " $5 ")"}' /tmp/routecheck.txt
+
+          checked=$(wc -l < /tmp/routecheck.txt)
+          fails=$(awk -F'|' '$1=="FAIL"' /tmp/routecheck.txt | wc -l)
+          drift=$(awk -F'|' '$1=="DRIFT"' /tmp/routecheck.txt | wc -l)
+          echo "Checked $checked of $expected routes; $fails failed; $drift drifted"
+
+          # A per-item success log cannot tell you about an item the loop never
+          # started on, so compare the counts rather than trusting the log.
+          if [ "$checked" -ne "$expected" ]; then
+            echo "::error::Only $checked of $expected sitemap routes produced a result"
+            exit 1
+          fi
+          if [ "$fails" -gt 0 ]; then exit 1; fi
+          echo "✓ All $checked sitemap routes resolve 200"
 
       - name: Install Playwright (chromium only)
         if: steps.url.outputs.skip != 'true'
