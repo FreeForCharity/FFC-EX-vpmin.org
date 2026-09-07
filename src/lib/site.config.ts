@@ -156,27 +156,71 @@ export type SiteConfig = {
 }
 
 export const siteConfig: SiteConfig = {
+  // Every value below is taken from what Viewpoint Ministries International
+  // publishes on its own site (captured in src/clone-content/), not composed
+  // for it. Where the charity publishes nothing, the field is left empty or at
+  // the template default rather than invented.
+  //
+  // `name` and `ein` are DELIBERATELY still Free For Charity's. They are not a
+  // separable "safe half" of the rebrand, which is what this change set out to
+  // land, and the reason is measured rather than assumed:
+  //
+  //   * `check-drift.mjs`'s brand-identity scan is dormant while `name` is the
+  //     template's and activates the moment it is not. Flipping it alone
+  //     produced 103 errors across 10 files — the whole policy suite
+  //     (privacy, cookie, terms, donation, vulnerability disclosure, security
+  //     acknowledgements) names Free For Charity as the data controller and as
+  //     the counterparty for donations, carries FFC's EIN, phone and email,
+  //     and is linked from the footer of every one of the 596 pages. Those
+  //     documents are legal commitments; rewriting them to name this charity
+  //     would make it the controller and counterparty in text nobody here has
+  //     reviewed. That is the charity's to supply — see issue #28.
+  //   * The gate is right to refuse: a footer reading "Viewpoint Ministries
+  //     International" above policies reading "Free For Charity" is worse than
+  //     today's wrong-but-consistent state, not better.
+  //   * `ein` is coupled to `name` through ffc-footer's identity line
+  //     (`${name} — EIN ${ein}`). Setting the EIN alone would publish
+  //     "Free For Charity — EIN 87-4114240" on 596 pages, pairing one
+  //     organisation's name with another's tax ID.
+  //
+  // The charity's EIN is 87-4114240 (supplied by FFC from the onboarding
+  // record; the live site publishes no EIN anywhere in its 587 pages). It could
+  // NOT be checked against Candid: workflow 801 was dispatched and failed
+  // before reaching the API, at the Azure OIDC exchange, with AADSTS700213 —
+  // no federated identity record for `…:environment:candid-prod-read`. That
+  // lane has never had its one-time provisioning. Every public registry that
+  // would answer independently (IRS TEOS, ProPublica, GuideStar) is blocked by
+  // this environment's egress proxy. What does corroborate it: an EIN registry
+  // pairs 87-4114240 with "VIEWPOINT MINISTRIES INTERNATIONAL" at Hyattsville,
+  // Maryland, and the charity's own site links a Givelify campaign whose slug
+  // reads `viewpoint-ministries-international-inc-hyattsville-md`.
+  //
+  // When the identity flip does land: the legal name is "Viewpoint Ministries
+  // International, **Inc.**", as the site's own donation and status lines write
+  // it, but `name` should omit the suffix — it is the title-template suffix and
+  // `og:site_name`, and the converter only stops emitting absolute titles when
+  // it matches the brand string in the captured titles exactly.
   name: 'Free For Charity',
-  tagline: 'Reduce Costs, Increase Impact',
+  tagline: 'Contend Earnestly For The Faith (Jude 1:3)',
   description:
-    'Free For Charity connects students, professionals, and businesses with nonprofits to reduce costs and increase revenues—putting more resources back into their missions.',
+    'Viewpoint Ministries International, Inc. is a registered 501(c)(3) nonprofit providing support and assistance to communities in the United States and abroad, furthering the prospects of peaceable living through instruction and information on practical Christian living.',
   shortDescription:
-    'Connecting students, professionals, and businesses with nonprofits to reduce costs and increase revenues.',
+    'A registered 501(c)(3) nonprofit supporting communities in the United States and abroad through practical Christian living, school outreach and Bible tracts.',
   // Bare origin only (drift-check enforced). The template deploys to the
   // GitHub Pages default URL; the /FFC-IN-FFC_Single_Page_Template subpath
   // comes from NEXT_PUBLIC_BASE_PATH, which siteUrl() folds in at build time.
   // A fork with a custom domain sets its own origin here (and no basePath).
   url: 'https://freeforcharity.github.io',
-  twitterHandle: '@freeforcharity',
-  contactEmail: 'security@freeforcharity.org',
+  twitterHandle: '@viewpointmin',
+  contactEmail: 'info@viewpointministriesinternational.org',
   keywords: [
     'nonprofit',
     'charity',
-    'volunteer',
+    'ministry',
+    'Christian living',
+    'school outreach',
+    'Bible tracts',
     'donate',
-    'free hosting',
-    'domains',
-    'Microsoft 365',
   ],
   themeColor: '#ffffff',
   // Trailing slash to match next.config's `trailingSlash: true`: the export
@@ -184,30 +228,31 @@ export const siteConfig: SiteConfig = {
   // only resolves via a host-specific directory fallback (a 301 on GitHub
   // Pages). error.tsx and not-found.tsx link straight here.
   vulnerabilityDisclosurePath: '/vulnerability-disclosure-policy/',
+  // The charity's own accounts, as linked from every captured page's footer.
   social: [
-    { label: 'Facebook', href: 'https://www.facebook.com/freeforcharity' },
-    { label: 'X (Twitter)', href: 'https://x.com/freeforcharity1' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/company/freeforcharity/' },
-    { label: 'GitHub', href: 'https://github.com/FreeForCharity/FFC-IN-FFC_Single_Page_Template' },
+    { label: 'Facebook', href: 'http://facebook.com/ViewpointMinistries' },
+    { label: 'X (Twitter)', href: 'https://twitter.com/viewpointmin' },
+    { label: 'Instagram', href: 'https://www.instagram.com/viewpointministries/' },
+    { label: 'YouTube', href: 'https://www.youtube.com/c/ViewpointMinistries/videos' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/company/viewpoint-ministries/' },
+    { label: 'Pinterest', href: 'https://www.pinterest.com/viewpointministries/_created/' },
+    { label: 'Tumblr', href: 'https://www.tumblr.com/blog/viewpointministries' },
   ],
+  // Still the template's, and coupled to `name` — see the note at the top of
+  // this object for the charity's real EIN and what verification stands behind
+  // it. ffc-footer treats this exact value as absent, so no EIN is published.
   ein: '46-2471893',
-  foundingDate: '2014',
+  // `foundingDate` dropped rather than replaced: the template carried FFC's
+  // 2014, and the charity publishes no founding year. It is optional, so an
+  // absent `foundingDate` simply omits schema.org's `foundingDate`.
   nonprofitStatus: 'https://schema.org/Nonprofit501c3',
-  phone: { display: '(520) 222-8104', tel: '5202228104' },
-  addresses: [
-    {
-      label: 'Main Address',
-      lines: ['4030 Wake Forrest Road', 'Suite 349', 'Raleigh, NC 27609'],
-      mapUrl:
-        'https://www.google.com/maps/search/?api=1&query=4030+Wake+Forrest+Road+Suite+349+Raleigh+NC+27609',
-    },
-    {
-      label: 'PA Office Address',
-      lines: ['301 Science Park Road, Suite 119', 'State College, PA 16803'],
-      mapUrl:
-        'https://www.google.com/maps/place/Free+For+Charity/@40.7768455,-77.8963305,17z/data=!3m1!4b1!4m6!3m5!1s0x89cea944b44a2e01:0x6fc2d6bf09e00a0f!8m2!3d40.7768415!4d-77.8937556!16s%2Fg%2F11vzvbl2d7?entry=ttu&g_ep=EgoyMDI1MTEyMy4xIKXMDSoASAFQAw%3D%3D',
-    },
-  ],
+  phone: { display: '(301) 683-8930', tel: '3016838930' },
+  // The charity publishes no mailing address. Empty rather than FFC's Raleigh
+  // and State College offices, which are not this organisation's. Nothing
+  // renders `addresses`, and the shared schema sets no `minItems`, so an empty
+  // array is valid — carrying the wrong address would not be.
+  addresses: [],
+  // Still Free For Charity's — coupled to `name`/`ein`, see the note above.
   guidestar: {
     profileUrl: 'https://www.guidestar.org/profile/46-2471893',
     directProfileUrl:
