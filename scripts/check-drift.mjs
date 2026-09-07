@@ -562,6 +562,7 @@ const FFC_IDENTITY_PATTERNS = [
 // or email — is still flagged even inside the footer.
 function isAllowedIdentityLine(relPath, line) {
   const normalized = relPath.split(sep).join('/')
+  if (normalized === 'src/lib/site.config.ts') return isRetainedTemplateCandidProfile(line)
   if (normalized !== 'src/components/footer/index.tsx') return false
   return (
     /Built with Free For Charity/.test(line) ||
@@ -570,15 +571,100 @@ function isAllowedIdentityLine(relPath, line) {
   )
 }
 
-// siteConfig.supportedBy intentionally keeps Free For Charity's name and URL
-// forever: it is the permanent "Supported by" attribution required by the FFC
-// footer standard, not leftover branding. Blank exactly that block (preserving
-// newlines so reported line numbers stay accurate) before the identity scan,
-// so every OTHER FFC reference in site.config.ts is still flagged.
-function withoutSupportedByBlock(relPath, body) {
+// The template Candid/GuideStar profile, and ONLY those two exact strings, may
+// remain in a rebranded site.config.ts.
+//
+// This is not the same kind of exemption as supportedBy/parentOrg, which are
+// permanent. It is an item that is genuinely unfinished — and it belongs on the
+// advisory `check:rebrand` checklist (where it is still reported) rather than
+// on this hard CI gate, because ffc-footer PROVES it is not published:
+// `candidUrl` is blanked when profileUrl equals the template value, and the
+// identity line links to Candid only when the EIN and the Candid URL are both
+// real. So a site can set a verified EIN — which then renders as plain text —
+// without first having to publish a Candid profile URL nobody has confirmed
+// resolves. Substituting an unverified one on every page is the outcome this
+// exemption exists to avoid.
+//
+// Matched by exact string: any OTHER guidestar.org/freeforcharity.org URL, or
+// a bare 46-2471893 anywhere else in the file, still hard-fails.
+const TEMPLATE_CANDID_URLS = [
+  'https://www.guidestar.org/profile/46-2471893',
+  'https://www.guidestar.org/profile/shared/bbbe173a-87b9-4af9-a8a2-cae255a95742',
+]
+function isRetainedTemplateCandidProfile(line) {
+  const trimmed = line
+    .trim()
+    .replace(/^profileUrl:\s*/, '')
+    .replace(/^directProfileUrl:\s*/, '')
+  return TEMPLATE_CANDID_URLS.some((u) => trimmed === `'${u}',` || trimmed === `'${u}'`)
+}
+
+/**
+ * Blank out JS comments, preserving every byte position and newline.
+ *
+ * A comment is prose ABOUT a value, not the value. Without this, documenting
+ * why a field keeps a Free For Charity default — which the ein/guidestar notes
+ * in a migrated site.config.ts must do — reads to this scanner as the leftover
+ * branding itself, and the report then states the opposite of the truth.
+ *
+ * The naive form (replace `//` to end of line) destroys every `https://` URL in
+ * the file, which is exactly what this scanner exists to find — it would fail
+ * silently and in the reassuring direction. So this walks the source tracking
+ * string state and only opens a comment outside a string or template literal.
+ * Byte positions are preserved so reported line numbers stay accurate.
+ *
+ * Kept in step with the copy in scripts/rebrand-check.mjs.
+ */
+function maskComments(source) {
+  const blank = (s) => s.replace(/[^\n]/g, ' ')
+  let out = ''
+  let i = 0
+  const n = source.length
+  while (i < n) {
+    const c = source[i]
+    if (c === '"' || c === "'" || c === '`') {
+      let j = i + 1
+      while (j < n && source[j] !== c) j += source[j] === '\\' ? 2 : 1
+      out += source.slice(i, Math.min(j + 1, n))
+      i = j + 1
+      continue
+    }
+    if (c === '/' && source[i + 1] === '/') {
+      let j = source.indexOf('\n', i)
+      if (j === -1) j = n
+      out += blank(source.slice(i, j))
+      i = j
+      continue
+    }
+    if (c === '/' && source[i + 1] === '*') {
+      const end = source.indexOf('*/', i + 2)
+      const stop = end === -1 ? n : end + 2
+      out += blank(source.slice(i, stop))
+      i = stop
+      continue
+    }
+    out += c
+    i += 1
+  }
+  return out
+}
+
+// siteConfig.supportedBy AND siteConfig.parentOrg intentionally keep Free For
+// Charity's name and URL forever: together they are the permanent "Supported
+// by" / parent-organisation attribution required by the FFC footer standard,
+// not leftover branding. ffc-footer renders parentOrg.name and parentOrg.url
+// exactly as it renders supportedBy, so masking one and not the other made
+// this check fail permanently on every site that DID rebrand correctly —
+// measured here: three errors on a finished rebrand, all of them parentOrg.
+// Blank both blocks (preserving newlines so reported line numbers stay
+// accurate) before the identity scan, so every OTHER FFC reference in
+// site.config.ts is still flagged.
+function withoutPermanentAttribution(relPath, body) {
   const normalized = relPath.split(sep).join('/')
   if (normalized !== 'src/lib/site.config.ts') return body
-  return body.replace(/supportedBy:\s*\{[^}]*\}/g, (block) => block.replace(/[^\n]/g, ' '))
+  return body.replace(/(?:supportedBy|parentOrg):\s*\{[^}]*\}/g, (block) =>
+    block.replace(/[^\n]/g, ' ')
+  )
 }
 
 async function checkBrandIdentity() {
@@ -605,7 +691,7 @@ async function checkBrandIdentity() {
     } catch {
       continue
     }
-    const lines = withoutSupportedByBlock(rel, body).split('\n')
+    const lines = withoutPermanentAttribution(rel, maskComments(body)).split('\n')
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]
       if (isAllowedIdentityLine(rel, line)) continue
