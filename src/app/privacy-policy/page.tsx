@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema'
 import { pageMetadata } from '@/lib/page-metadata'
+import { ContactDetails } from '@/components/ui/ContactDetails'
+import { siteConfig, siteUrl } from '@/lib/site.config'
 
 const PAGE_NAME = 'Privacy Policy'
 // Trailing slash to match next.config's `trailingSlash: true` — the export
@@ -12,7 +14,7 @@ const CANONICAL_PATH = '/privacy-policy/'
 // per-page OG/Twitter handling is documented in src/lib/page-metadata.ts.
 export const metadata: Metadata = pageMetadata({
   title: PAGE_NAME,
-  description: 'Privacy Policy for Free For Charity website',
+  description: `Privacy Policy for ${siteConfig.name} website`,
   canonical: CANONICAL_PATH,
 })
 
@@ -35,10 +37,10 @@ export default function PrivacyPolicy() {
             <strong>1. Introduction</strong>
           </h2>
           <p className="text-[14px] text-[#666] pb-[10px] leading-[24px] font-[500]">
-            At Free for Charity, accessible from https://freeforcharity.org, your privacy is one of
-            our primary concerns. This Privacy Policy document contains types of information we
-            collect and record, and how we use it. By using our website, you hereby consent to our
-            Privacy Policy and agree to its terms.
+            At {siteConfig.name}, accessible from {siteUrl('/')}, your privacy is one of our primary
+            concerns. This Privacy Policy document contains types of information we collect and
+            record, and how we use it. By using our website, you hereby consent to our Privacy
+            Policy and agree to its terms.
           </p>
 
           {/* Section 2 */}
@@ -46,7 +48,7 @@ export default function PrivacyPolicy() {
             <strong>2. Who We Are</strong>
           </h2>
           <p className="text-[14px] text-[#666] pb-[10px] leading-[24px] font-[500]">
-            Our website address is: https://freeforcharity.org
+            Our website address is: {siteUrl('/')}
           </p>
 
           {/* Section 3 */}
@@ -154,7 +156,7 @@ export default function PrivacyPolicy() {
             <li className="text-[14px] text-[#666] leading-[24px] font-[500]">
               <strong>Additional Third-Party Services:</strong> Microsoft Forms may use additional
               services (including HubSpot) for form analytics and feedback collection. These are
-              controlled by Microsoft, not Free For Charity.
+              controlled by Microsoft, not {siteConfig.name}.
             </li>
             <li className="text-[14px] text-[#666] leading-[24px] font-[500]">
               <strong>Privacy Policy:</strong> Review Microsoft&apos;s privacy practices at{' '}
@@ -336,7 +338,8 @@ export default function PrivacyPolicy() {
             </li>
           </ul>
           <p className="text-[14px] text-[#666] pb-[10px] leading-[24px] font-[500]">
-            To exercise these rights, please contact us at 520-222-8104.
+            To exercise these rights, please contact us at{' '}
+            <ContactDetails className="text-[#0062CC] underline" />.
           </p>
 
           {/* Section 8 */}
@@ -392,13 +395,10 @@ export default function PrivacyPolicy() {
           </p>
           <p className="text-[14px] text-[#666] pb-[10px] leading-[24px] font-[500]">
             <strong>Exercising your rights and complaints.</strong> Contact us at{' '}
-            <a href="mailto:clarkemoyer@freeforcharity.org" className="text-[#0062CC] underline">
-              clarkemoyer@freeforcharity.org
-            </a>{' '}
-            or 520-222-8104 to exercise any of these rights; we will respond within the time limits
-            the GDPR sets. You also have the right to lodge a complaint with your national data
-            protection supervisory authority (in the UK, the Information Commissioner&apos;s
-            Office).
+            <ContactDetails className="text-[#0062CC] underline" /> to exercise any of these rights;
+            we will respond within the time limits the GDPR sets. You also have the right to lodge a
+            complaint with your national data protection supervisory authority (in the UK, the
+            Information Commissioner&apos;s Office).
           </p>
 
           {/* Section 9 */}
@@ -411,7 +411,7 @@ export default function PrivacyPolicy() {
             supplements the rest of this policy.
           </p>
           <p className="text-[14px] text-[#666] pb-[10px] leading-[24px] font-[500]">
-            <strong>We do not sell or share your personal information.</strong> Free For Charity
+            <strong>We do not sell or share your personal information.</strong> {siteConfig.name}
             does not sell personal information, and does not share it for cross-context behavioral
             advertising, as those terms are defined by California law — and has not done so in the
             preceding 12 months. We do not knowingly collect or sell the personal information of
@@ -439,12 +439,10 @@ export default function PrivacyPolicy() {
           </p>
           <p className="text-[14px] text-[#666] pb-[10px] leading-[24px] font-[500]">
             <strong>Exercising your rights.</strong> Submit a request to{' '}
-            <a href="mailto:clarkemoyer@freeforcharity.org" className="text-[#0062CC] underline">
-              clarkemoyer@freeforcharity.org
-            </a>{' '}
-            or 520-222-8104. We will verify your request using information associated with your
-            interactions with us, and you may use an authorized agent to submit a request on your
-            behalf. We will respond within the timeframes California law requires.
+            <ContactDetails className="text-[#0062CC] underline" />. We will verify your request
+            using information associated with your interactions with us, and you may use an
+            authorized agent to submit a request on your behalf. We will respond within the
+            timeframes California law requires.
           </p>
 
           {/* Section 10 */}
@@ -553,11 +551,7 @@ export default function PrivacyPolicy() {
           </p>
           <ul className="list-inside list-disc space-y-[4px] pb-[1em]">
             <li className="text-[14px] text-[#666] leading-[24px] font-[500]">
-              <strong>Email:</strong>{' '}
-              <a href="mailto:clarkemoyer@freeforcharity.org" className="text-[#0062CC] underline">
-                clarkemoyer@freeforcharity.org
-              </a>{' '}
-              520-222-8104
+              <strong>Email:</strong> <ContactDetails className="text-[#0062CC] underline" />
             </li>
           </ul>
 
@@ -567,21 +561,13 @@ export default function PrivacyPolicy() {
           </h2>
 
           <p className="text-[14px] text-[#666] pb-[10px] leading-[24px] font-[500]">
-            <strong>16.1. Data Protection Officer</strong>
+            <strong>16.1. Privacy Contact</strong>
           </p>
           <p className="text-[14px] text-[#666] pb-[10px] leading-[24px] font-[500]">
-            We have appointed a Data Protection Officer (DPO) responsible for overseeing questions
-            in relation to this Privacy Policy:
+            Questions about this Privacy Policy, or about how {siteConfig.name} handles your
+            personal information, can be sent to{' '}
+            <ContactDetails className="text-[#0062CC] underline" />.
           </p>
-          <ul className="list-inside list-disc space-y-[4px] pb-[1em]">
-            <li className="text-[14px] text-[#666] leading-[24px] font-[500]">
-              <strong>Contact DPO:</strong> Clarke Moyer{' '}
-              <a href="mailto:clarkemoyer@freeforcharity.org" className="text-[#0062CC] underline">
-                clarkemoyer@freeforcharity.org
-              </a>{' '}
-              520-222-8104
-            </li>
-          </ul>
 
           <p className="text-[14px] text-[#666] pb-[10px] leading-[24px] font-[700] mt-[1.5em]">
             Your trust matters to us, and we are committed to protecting your personal information

@@ -271,6 +271,22 @@ body {
   color: #3d3d3d;
   font-size: 0.85rem;
 }
+/* Footer-standard fields still awaiting the charity (siteConfig.pending). */
+.ffc-footer__pending {
+  font-size: 0.9rem;
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+}
+.ffc-footer__pending li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  justify-content: center;
+}
+.ffc-footer__pending-label {
+  font-weight: 600;
+}
 
 /* Text that exists for a screen reader and a crawler, not for a sighted
    reader: the destination appended to a "Read More" link. Clipped rather than

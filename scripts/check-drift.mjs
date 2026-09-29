@@ -571,6 +571,13 @@ function isAllowedIdentityLine(relPath, line) {
   )
 }
 
+// Pages that ARE Free For Charity's own documents, published on every site
+// under FFC's name by design — not leftover template branding (ported from
+// FreeForCharity/FFC-IN-FFC_Single_Page_Template). Exempted by exact path only,
+// so the same identity anywhere else — including the charity's own
+// /donation-policy — is still an error.
+const FFC_OWN_DOCUMENTS = new Set(['src/app/free-for-charity-donation-policy/page.tsx'])
+
 // The template Candid/GuideStar profile, and ONLY those two exact strings, may
 // remain in a rebranded site.config.ts.
 //
@@ -685,6 +692,7 @@ async function checkBrandIdentity() {
   const files = await walk(SRC_DIR, (n) => /\.(tsx?|jsx?)$/.test(n))
   for (const full of files) {
     const rel = relative(ROOT, full)
+    if (FFC_OWN_DOCUMENTS.has(rel.split(sep).join('/'))) continue
     let body
     try {
       body = await readFile(full, 'utf8')
