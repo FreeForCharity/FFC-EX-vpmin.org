@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema'
 import { pageMetadata } from '@/lib/page-metadata'
+import { ContactEmail } from '@/components/ui/ContactDetails'
+import { PENDING_TEXT, isPending, publishedPhone, siteConfig } from '@/lib/site.config'
 
 const PAGE_NAME = 'Donation Policy'
 // Trailing slash to match next.config's `trailingSlash: true` — the export
@@ -11,11 +13,18 @@ const CANONICAL_PATH = '/donation-policy/'
 // per-page OG/Twitter handling is documented in src/lib/page-metadata.ts.
 export const metadata: Metadata = pageMetadata({
   title: PAGE_NAME,
-  description: 'Donation Policy for Free For Charity website',
+  description: `Donation Policy for ${siteConfig.name} website`,
   canonical: CANONICAL_PATH,
 })
 
 export default function DonationPolicy() {
+  // A 501(c)(3) (taxStatusLabel set) may call a donation tax-deductible.
+  const taxExempt = siteConfig.taxStatusLabel.trim() !== ''
+  const phone = publishedPhone()
+  // The EIN clause: the EIN itself, the pending placeholder while the charity
+  // has not supplied it, or nothing when it has none (see PendingField).
+  const ein = siteConfig.ein.trim()
+  const einClause = isPending('ein') ? ` (EIN: ${PENDING_TEXT})` : ein ? ` (EIN: ${ein})` : ''
   return (
     <div className="ffc-container py-16">
       <BreadcrumbSchema name={PAGE_NAME} path={CANONICAL_PATH} />
@@ -32,24 +41,30 @@ export default function DonationPolicy() {
           <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
             Tax Deductibility
           </h2>
-          <p>
-            Free For Charity is a qualified 501(c)(3) nonprofit organization (EIN: 46-2471893).
-            Donations are tax-deductible to the full extent allowed by law.
-          </p>
+          {taxExempt ? (
+            <p>
+              {siteConfig.name} is a qualified 501(c)(3) nonprofit organization{einClause}.
+              Donations are tax-deductible to the full extent allowed by law.
+            </p>
+          ) : (
+            <p>
+              {siteConfig.name}
+              {einClause} has not yet received IRS recognition as a 501(c)(3) organization, so
+              donations may not be tax-deductible. Please consult a tax advisor before claiming a
+              deduction.
+            </p>
+          )}
 
           <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
             Use of Donations
           </h2>
+          {/* The charity's own words, from its Donate page. */}
           <p>
-            Donations support our mission to reduce costs and increase revenues for nonprofits by
-            providing:
+            Your donation will help us to continue providing needed and necessary support and
+            assistance to the community, further the prospects of peaceable living, and overcome
+            challenges through the provision of instructions and information on practical Christian
+            living.
           </p>
-          <ul>
-            <li>Free domain registration and hosting services</li>
-            <li>Technology consultation and support</li>
-            <li>Volunteer coordination and training</li>
-            <li>Administrative costs necessary to operate our programs</li>
-          </ul>
 
           <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
             Donation Processing
@@ -80,12 +95,13 @@ export default function DonationPolicy() {
           </h2>
           <p>For questions about donations or this policy, please contact us at:</p>
           <p>
-            Email:{' '}
-            <a href="mailto:clarkemoyer@freeforcharity.org" className="text-primary underline">
-              clarkemoyer@freeforcharity.org
-            </a>
-            <br />
-            Phone: (520) 222-8104
+            Email: <ContactEmail className="text-primary underline" />
+            {phone && (
+              <>
+                <br />
+                Phone: {phone.display}
+              </>
+            )}
           </p>
         </div>
       </div>

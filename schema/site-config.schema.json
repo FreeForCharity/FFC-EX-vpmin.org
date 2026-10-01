@@ -23,18 +23,22 @@
     "shortDescription": { "type": "string" },
     "url": { "type": "string", "minLength": 1 },
     "twitterHandle": { "type": "string" },
-    "contactEmail": { "type": "string", "minLength": 1 },
+    "contactEmail": {
+      "type": "string",
+      "description": "May be empty only while listed in `pending`."
+    },
     "keywords": { "type": "array", "items": { "type": "string" } },
     "themeColor": { "type": "string" },
     "vulnerabilityDisclosurePath": { "type": "string" },
-    "ein": { "type": "string", "minLength": 1 },
+    "ein": { "type": "string", "description": "May be empty only while listed in `pending`." },
     "phone": {
       "type": "object",
       "additionalProperties": true,
       "required": ["display", "tel"],
+      "$comment": "Both keys are required, but either may be the empty string, which means 'this charity publishes no phone number'. The footer then omits the Call Us block entirely. This matches the existing convention for social[].href and twitterHandle: present but empty disables the feature. Requiring a non-empty value forced a placeholder into the config, which shipped as a tel: link that looked callable and dialled nothing.",
       "properties": {
-        "display": { "type": "string", "minLength": 1 },
-        "tel": { "type": "string", "minLength": 1 }
+        "display": { "type": "string" },
+        "tel": { "type": "string" }
       }
     },
     "addresses": {
@@ -55,8 +59,14 @@
       "additionalProperties": true,
       "required": ["profileUrl", "directProfileUrl"],
       "properties": {
-        "profileUrl": { "type": "string", "minLength": 1 },
-        "directProfileUrl": { "type": "string", "minLength": 1 }
+        "profileUrl": {
+          "type": "string",
+          "description": "Empty string = no GuideStar profile yet; the footer hides the seal."
+        },
+        "directProfileUrl": {
+          "type": "string",
+          "description": "Empty string = no direct GuideStar profile link yet; the footer hides that button."
+        }
       }
     },
     "social": {
@@ -80,6 +90,11 @@
         "url": { "const": "https://freeforcharity.org" },
         "hubUrl": { "type": "string", "minLength": 1 }
       }
+    },
+    "pending": {
+      "type": "array",
+      "description": "Footer-standard fields still awaiting the charity; each renders a visible placeholder and must have an empty value.",
+      "items": { "type": "string" }
     },
     "parentOrg": {
       "type": "object",
