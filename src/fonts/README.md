@@ -11,6 +11,8 @@ Source: https://github.com/google/fonts at commit
 - `ofl/faustina/Faustina[wght].ttf`
 
 The accompanying OFL files contain the copyright and redistribution terms.
+Identical copies under `public/fonts/` are shipped in the static export alongside
+the font assets; `verify:build` checks the exported notices.
 Fonts were converted with fontTools 4.61.1 and Brotli 1.2.1 to WOFF2, retaining
 Latin/Latin-extended characters and common punctuation, currency and symbols:
 U+0000–024F, U+1E00–1EFF, U+2000–206F, U+20A0–20CF, U+2100–214F,
