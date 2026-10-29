@@ -30,6 +30,7 @@ describe('archived WordPress reference repairs', () => {
   it('unlinks dead author and comment websites without deleting their text', () => {
     for (const host of [
       'solomonoluwabiyi.com',
+      'www.solomonoluwabiyi.com',
       'forumslot.forumjudol.com',
       'slojdunman.com',
       'similar.my.id',
