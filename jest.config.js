@@ -34,6 +34,7 @@ const customJestConfig = {
   },
   moduleNameMapper: {
     // Handle module aliases (from tsconfig.json)
+    '^@/lib/clone-content$': '<rootDir>/src/lib/site-clone-content.ts',
     '^@/(.*)$': '<rootDir>/src/$1',
   },
 }
