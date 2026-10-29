@@ -18,6 +18,8 @@ const eslintConfig = [
   ...compat.extends('plugin:prettier/recommended'),
   {
     ignores: [
+      // Static WordPress clone assets (not source), added by workflow 706.
+      'public/**',
       'node_modules/**',
       '.next/**',
       'out/**',

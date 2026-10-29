@@ -65,6 +65,56 @@ async function dirContains(relDir, needle) {
   return false
 }
 
+/**
+ * Blank out JS comments, preserving every byte position and newline.
+ *
+ * A comment is prose ABOUT a value, not the value. Without this, documenting
+ * why a field keeps a Free For Charity default — which the ein/guidestar notes
+ * in a migrated site.config.ts must do — reads to this scanner as the leftover
+ * branding itself, and the report then states the opposite of the truth.
+ *
+ * The naive form (replace `//` to end of line) destroys every `https://` URL in
+ * the file, which is exactly what this scanner exists to find — it would fail
+ * silently and in the reassuring direction. So this walks the source tracking
+ * string state and only opens a comment outside a string or template literal.
+ * Byte positions are preserved so reported line numbers stay accurate.
+ *
+ * Kept in step with the copy in scripts/check-drift.mjs.
+ */
+function maskComments(source) {
+  const blank = (s) => s.replace(/[^\n]/g, ' ')
+  let out = ''
+  let i = 0
+  const n = source.length
+  while (i < n) {
+    const c = source[i]
+    if (c === '"' || c === "'" || c === '`') {
+      let j = i + 1
+      while (j < n && source[j] !== c) j += source[j] === '\\' ? 2 : 1
+      out += source.slice(i, Math.min(j + 1, n))
+      i = j + 1
+      continue
+    }
+    if (c === '/' && source[i + 1] === '/') {
+      let j = source.indexOf('\n', i)
+      if (j === -1) j = n
+      out += blank(source.slice(i, j))
+      i = j
+      continue
+    }
+    if (c === '/' && source[i + 1] === '*') {
+      const end = source.indexOf('*/', i + 2)
+      const stop = end === -1 ? n : end + 2
+      out += blank(source.slice(i, stop))
+      i = stop
+      continue
+    }
+    out += c
+    i += 1
+  }
+  return out
+}
+
 // Each finding: a template default still present that a fork should replace.
 const findings = []
 function flag(category, label, where) {
@@ -86,7 +136,11 @@ async function checkSiteConfig() {
   // forever — it is the permanent "Supported by" footer attribution required by
   // the FFC footer standard, NOT a rebrand target. Drop that block before
   // scanning so it never shows up (or fails --strict) as an unfinished rebrand.
-  const scanned = cfg.replace(/supportedBy:\s*\{[^}]*\}/g, '')
+  // parentOrg is the same permanent attribution as supportedBy, and comments
+  // are prose about a value rather than the value — a note explaining why
+  // `guidestar` still holds FFC's profile must not report as an unfinished
+  // rebrand of the name and EIN. Both were doing exactly that here.
+  const scanned = maskComments(cfg).replace(/(?:supportedBy|parentOrg):\s*\{[^}]*\}/g, '')
   const defaults = [
     ['Charity name still "Free For Charity"', 'Free For Charity'],
     ['Domain still ffcworkingsite1.org', 'ffcworkingsite1.org'],

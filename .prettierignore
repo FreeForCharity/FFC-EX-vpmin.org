@@ -30,3 +30,8 @@ playwright-report
 .DS_Store
 *.pem
 DEPENDABOT.md
+# Static WordPress clone assets (not source)
+public/
+
+# Captured page markup (generated, whitespace-sensitive)
+src/clone-content/

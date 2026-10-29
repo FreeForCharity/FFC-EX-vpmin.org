@@ -30,10 +30,17 @@ test.describe('axe-core homepage guardrail', () => {
     // Don't wait for 'networkidle': the homepage embeds always-on third-party
     // resources (GTM, Zeffy, Google Maps) that keep the network busy, so
     // networkidle never settles and the test times out. Instead wait for the
-    // DOM and for the footer — the last major landmark — to render, which
-    // means the page has hydrated and is ready for an a11y scan.
+    // DOM and for the FFC attribution footer — the last thing the layout
+    // renders — which means the page has hydrated and is ready for a scan.
+    //
+    // Scoped to `.ffc-footer` rather than `footer`: the converted pages carry
+    // the charity's own visual footer INSIDE <main>, so a bare `footer`
+    // locator matches two elements and fails Playwright's strict mode. Two
+    // <footer> elements is correct here — one inside <main> is not a
+    // contentinfo landmark — and the one that signals "the layout is done" is
+    // the FFC one.
     await page.waitForLoadState('domcontentloaded')
-    await page.locator('footer').waitFor({ state: 'visible' })
+    await page.locator('.ffc-footer').waitFor({ state: 'visible' })
 
     const results = await new AxeBuilder({ page })
       .include('body')
@@ -72,14 +79,26 @@ test.describe('axe-core homepage guardrail', () => {
  * This spec pins the rule explicitly on every static page so a reintroduced
  * h2→h4 jump (fixed once in cookie-policy) fails with a pointer to the node.
  */
-const STATIC_PAGES = ['/', '/cookie-policy', '/privacy-policy', '/terms-of-service']
+// Trailing slashes because next.config sets `trailingSlash: true`; without
+// them `serve` and GitHub Pages both redirect, and the paths named here would
+// no longer be the ones under test. Two converted pages are included so the
+// guard covers the migrated content, not only the template's policy pages —
+// heading order is exactly what the conversion rewrites.
+const STATIC_PAGES = [
+  '/',
+  '/about-us/',
+  '/podcast/',
+  '/cookie-policy/',
+  '/privacy-policy/',
+  '/terms-of-service/',
+]
 
 test.describe('heading order on static pages', () => {
   for (const path of STATIC_PAGES) {
     test(`headings descend sequentially on ${path}`, async ({ page }) => {
       await page.goto(path)
       await page.waitForLoadState('domcontentloaded')
-      await page.locator('footer').waitFor({ state: 'visible' })
+      await page.locator('.ffc-footer').waitFor({ state: 'visible' })
 
       const results = await new AxeBuilder({ page })
         .include('body')

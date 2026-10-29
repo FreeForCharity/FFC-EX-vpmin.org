@@ -30,6 +30,13 @@ try {
 
 const nextConfig: NextConfig = {
   output: 'export',
+  // The source WordPress served every page at a trailing-slash URL, and the
+  // converted pages link to each other the same way. Without this the export
+  // writes `about-us.html` and `/about-us/` 404s on GitHub Pages — so this is
+  // not a style preference: it is what keeps the migrated site's own internal
+  // links working, and what keeps every inbound link and search result that
+  // points at the old URLs landing on the page it used to.
+  trailingSlash: true,
   env: {
     EVENTS_SOURCES_CONFIGURED: eventsSourcesConfigured ? 'true' : '',
     EVENTS_SNAPSHOT_HAS_EVENTS: eventsSnapshotHasEvents ? 'true' : '',
