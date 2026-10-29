@@ -39,8 +39,11 @@ local edits, so tell the maintainer about changes before a recapture is run.
    maintainer; write access alone may not satisfy all merge requirements.
 
 `main` is protected. PR checks cover formatting, code errors, automated browser
-checks, and whether the website can be built. The `check:drift` guardrail also
-rejects placeholder URLs and asset paths that would break on GitHub Pages.
+checks, and whether the website can be built. The `check:drift` guardrail checks
+some code conventions, but its URL and asset-path scans do not cover the captured
+HTML files. Some template URLs produce warnings rather than failures. Green
+checks therefore do not prove that links and pictures in your HTML edit work:
+open each changed link and check the pictures on the deployed page.
 If a check fails, open its details and ask for help with the error; do not bypass
 the check. A maintainer can run `pnpm run check:drift` locally.
 
@@ -51,6 +54,12 @@ replacement with the **same filename and file type**, in the same folder under
 `public/`. Use a similar shape and size, and check every page that uses it. Upload
 to your PR's branch using **Add file → Upload files**. Update the image's `alt`
 description if what the picture shows has changed.
+
+Check the image tag for `srcset` before replacing it. Browsers may choose one of
+those separate image files at different screen sizes instead of the main `src`.
+Ask a maintainer to help replace every size variant and any `<picture>` sources;
+replacing only the main file can leave the old picture visible on phones or
+larger screens.
 
 For a new filename, ask a maintainer to help connect it. React page files use
 `assetPath('/Images/example.webp')` for a file in `public/Images/`. Captured HTML
