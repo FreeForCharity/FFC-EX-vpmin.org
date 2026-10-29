@@ -14,6 +14,7 @@ const unavailableImages = new Set([
 
 const unavailableHosts = new Set([
   'solomonoluwabiyi.com',
+  'www.solomonoluwabiyi.com',
   'forumslot.forumjudol.com',
   'slojdunman.com',
   'similar.my.id',
