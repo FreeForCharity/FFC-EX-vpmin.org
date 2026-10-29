@@ -19,6 +19,7 @@
       }
     ],
     "paths": {
+      "@/lib/clone-content": ["./src/lib/site-clone-content.ts"],
       "@/*": ["./src/*"]
     }
   },
