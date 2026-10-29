@@ -2,6 +2,7 @@
 // FFC-Cloudflare-Automation/assets/clone-content-lib.ts, not this copy.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { repairCloneContent } from './clone-repairs'
 
 // Read at module scope: `output: 'export'` runs every route at build time, so
 // this resolves once against the build's own environment rather than per page.
@@ -27,5 +28,5 @@ export function loadCloneContent(name: string): string {
     throw new Error(`refusing to load clone content for an unexpected name: ${name}`)
   }
   const raw = readFileSync(join(CONTENT_DIR, `${name}.html`), 'utf8')
-  return raw.split('%%BASE%%').join(basePath)
+  return repairCloneContent(raw.split('%%BASE%%').join(basePath), basePath)
 }
