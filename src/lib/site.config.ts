@@ -25,6 +25,41 @@ export type SiteAddress = {
   mapUrl: string
 }
 
+/**
+ * A footer-standard field the charity has not supplied yet. Listing a field in
+ * `siteConfig.pending` renders a visible "awaiting information" placeholder in
+ * its place (plain text, never a link), so a gap in the FFC footer standard is
+ * a call to action on the page rather than a silent omission. The field's own
+ * value must stay EMPTY while it is pending, so no placeholder or borrowed
+ * value (e.g. the template's supporting-organization details) can ship behind it.
+ *
+ * An empty value that is NOT listed here keeps its plain meaning: the charity
+ * has none (e.g. no public phone). `taxStatusLabel` is deliberately not a
+ * pending field: it is a legal claim, and '' means "make no claim".
+ *
+ * What "empty" means per field: `email` → `contactEmail`; `phone` → both
+ * `phone.display` and `phone.tel`; `address` → `addresses: []`; `ein` → `ein`;
+ * `guidestar` → both `guidestar` URLs; `social` → every `social[].href`;
+ * `team` → no leadership is published on this site; `donationUrl` →
+ * `integrations.zeffyDonationUrl`; `volunteerUrl` → `integrations.idealistUrl`.
+ * (Ported from FreeForCharity/FFC-IN-FFC_Single_Page_Template#483. This site
+ * renders the captured WordPress pages, so the placeholders appear in the
+ * FFC attribution footer, src/components/ffc-footer.)
+ */
+export type PendingField =
+  | 'email'
+  | 'phone'
+  | 'address'
+  | 'ein'
+  | 'guidestar'
+  | 'social'
+  | 'team'
+  | 'donationUrl'
+  | 'volunteerUrl'
+
+/** Visible text shown in place of a pending field. */
+export const PENDING_TEXT = 'Awaiting information from the charity'
+
 export type SiteConfig = {
   /** Display name of the charity (used in titles, OG/Twitter cards). */
   name: string
@@ -65,7 +100,7 @@ export type SiteConfig = {
   vulnerabilityDisclosurePath: string
   /** Social links displayed in the footer. */
   social: readonly SiteSocialLink[]
-  /** IRS Employer Identification Number (tax ID), e.g. '46-2471893'. */
+  /** IRS Employer Identification Number (tax ID), e.g. '12-3456789'. */
   ein: string
   /**
    * Year (or ISO date) the organization was founded, e.g. '2014'.
@@ -106,6 +141,15 @@ export type SiteConfig = {
    * nonprofit. Omit for a standalone charity (the footer clause is hidden).
    */
   parentOrg?: { name: string; url: string; hubUrl: string }
+  /**
+   * Footer-standard fields still awaiting the charity. Each listed field keeps
+   * an EMPTY value and renders a visible plain-text placeholder
+   * (`PENDING_TEXT`) in its slot, never a link. An empty value NOT listed here
+   * means "the charity has none". `taxStatusLabel` is deliberately not
+   * pending-able: it is a legal claim, so '' means "make no claim". See
+   * `PendingField`. Omit (or leave empty) when nothing is pending.
+   */
+  pending?: readonly PendingField[]
   /**
    * Label appended after the org name in the footer copyright line to describe
    * tax status, e.g. 'a US 501c3 Non Profit' or 'a pre-501(c)(3) nonprofit'.
@@ -157,50 +201,17 @@ export type SiteConfig = {
 
 export const siteConfig: SiteConfig = {
   // Every value below is taken from what Viewpoint Ministries International
-  // publishes on its own site (captured in src/clone-content/), not composed
-  // for it. Where the charity publishes nothing, the field is left empty or at
-  // the template default rather than invented.
+  // publishes on its own site (captured in src/clone-content/), or from the
+  // IRS record, not composed for it. Where the charity has supplied nothing,
+  // the field is left empty and listed in `pending` (never Free-For-Charity
+  // template defaults).
   //
-  // `name` and `ein` are DELIBERATELY still Free For Charity's. They are not a
-  // separable "safe half" of the rebrand, which is what this change set out to
-  // land, and the reason is measured rather than assumed:
-  //
-  //   * `check-drift.mjs`'s brand-identity scan is dormant while `name` is the
-  //     template's and activates the moment it is not. Flipping it alone
-  //     produced 103 errors across 10 files — the whole policy suite
-  //     (privacy, cookie, terms, donation, vulnerability disclosure, security
-  //     acknowledgements) names Free For Charity as the data controller and as
-  //     the counterparty for donations, carries FFC's EIN, phone and email,
-  //     and is linked from the footer of every one of the 596 pages. Those
-  //     documents are legal commitments; rewriting them to name this charity
-  //     would make it the controller and counterparty in text nobody here has
-  //     reviewed. That is the charity's to supply — see issue #28.
-  //   * The gate is right to refuse: a footer reading "Viewpoint Ministries
-  //     International" above policies reading "Free For Charity" is worse than
-  //     today's wrong-but-consistent state, not better.
-  //   * `ein` is coupled to `name` through ffc-footer's identity line
-  //     (`${name} — EIN ${ein}`). Setting the EIN alone would publish
-  //     "Free For Charity — EIN 87-4114240" on 596 pages, pairing one
-  //     organisation's name with another's tax ID.
-  //
-  // The charity's EIN is 87-4114240 (supplied by FFC from the onboarding
-  // record; the live site publishes no EIN anywhere in its 587 pages). It could
-  // NOT be checked against Candid: workflow 801 was dispatched and failed
-  // before reaching the API, at the Azure OIDC exchange, with AADSTS700213 —
-  // no federated identity record for `…:environment:candid-prod-read`. That
-  // lane has never had its one-time provisioning. Every public registry that
-  // would answer independently (IRS TEOS, ProPublica, GuideStar) is blocked by
-  // this environment's egress proxy. What does corroborate it: an EIN registry
-  // pairs 87-4114240 with "VIEWPOINT MINISTRIES INTERNATIONAL" at Hyattsville,
-  // Maryland, and the charity's own site links a Givelify campaign whose slug
-  // reads `viewpoint-ministries-international-inc-hyattsville-md`.
-  //
-  // When the identity flip does land: the legal name is "Viewpoint Ministries
-  // International, **Inc.**", as the site's own donation and status lines write
-  // it, but `name` should omit the suffix — it is the title-template suffix and
+  // `name` omits the ", Inc." suffix: it is the title-template suffix and
   // `og:site_name`, and the converter only stops emitting absolute titles when
-  // it matches the brand string in the captured titles exactly.
-  name: 'Free For Charity',
+  // it matches the brand string in the captured titles exactly. The legal
+  // name is in `alternateNames`.
+  name: 'Viewpoint Ministries International',
+  alternateNames: ['Viewpoint Ministries International, Inc.'],
   tagline: 'Contend Earnestly For The Faith (Jude 1:3)',
   description:
     'Viewpoint Ministries International, Inc. is a registered 501(c)(3) nonprofit providing support and assistance to communities in the United States and abroad, furthering the prospects of peaceable living through instruction and information on practical Christian living.',
@@ -238,32 +249,24 @@ export const siteConfig: SiteConfig = {
     { label: 'Pinterest', href: 'https://www.pinterest.com/viewpointministries/_created/' },
     { label: 'Tumblr', href: 'https://www.tumblr.com/blog/viewpointministries' },
   ],
-  // Still the template's, and coupled to `name` — see the note at the top of
-  // this object for the charity's real EIN and what verification stands behind
-  // it. ffc-footer treats this exact value as absent, so no EIN is published.
-  ein: '46-2471893',
+  // IRS EIN, confirmed against ProPublica's Nonprofit Explorer (IRS BMF:
+  // Viewpoint Ministries International Inc, 501(c)(3), ruling 2022-03).
+  ein: '87-4114240',
   // `foundingDate` dropped rather than replaced: the template carried FFC's
   // 2014, and the charity publishes no founding year. It is optional, so an
   // absent `foundingDate` simply omits schema.org's `foundingDate`.
   nonprofitStatus: 'https://schema.org/Nonprofit501c3',
   phone: { display: '(301) 683-8930', tel: '3016838930' },
-  // The charity publishes no mailing address. Empty rather than FFC's Raleigh
-  // and State College offices, which are not this organisation's. Nothing
-  // renders `addresses`, and the shared schema sets no `minItems`, so an empty
-  // array is valid — carrying the wrong address would not be.
+  // The charity publishes no mailing address: empty and pending (never the
+  // template's offices, which are not this organisation's).
   addresses: [],
-  // Still Free For Charity's — coupled to `name`/`ein`, see the note above.
+  // No Candid / GuideStar profile supplied by the charity yet: empty and
+  // pending (never another organization's profile, and not derived from the EIN).
   guidestar: {
-    profileUrl: 'https://www.guidestar.org/profile/46-2471893',
-    directProfileUrl:
-      'https://www.guidestar.org/profile/shared/bbbe173a-87b9-4af9-a8a2-cae255a95742',
+    profileUrl: '',
+    directProfileUrl: '',
   },
   supportedBy: {
-    name: 'Free For Charity',
-    url: 'https://freeforcharity.org',
-    hubUrl: 'https://freeforcharity.org/hub/',
-  },
-  parentOrg: {
     name: 'Free For Charity',
     url: 'https://freeforcharity.org',
     hubUrl: 'https://freeforcharity.org/hub/',
@@ -274,13 +277,18 @@ export const siteConfig: SiteConfig = {
     showPrograms: true,
     showEvents: true,
   },
+  // None of these is rendered by this site (the charity's own Donate and
+  // Volunteers pages are part of the captured site). They are emptied rather
+  // than left at the template's values, which are Free-For-Charity accounts.
   integrations: {
-    zeffyDonationUrl: 'https://www.zeffy.com/embed/donation-form/free-for-charity-endowment-fund',
-    idealistUrl:
-      'https://www.idealist.org/en/nonprofit/356bfc8e2ae64f83beea4a4e677e99d7-free-for-charity-state-college#opportunities',
-    eventsFacebookPageUrl: 'https://www.facebook.com/freeforcharity',
-    microsoftFormUrl: 'https://forms.office.com/r/vePxGq6JqG',
+    zeffyDonationUrl: '',
+    idealistUrl: '',
+    eventsFacebookPageUrl: '',
+    microsoftFormUrl: '',
   },
+  // Footer-standard fields still awaiting the charity; each renders a visible
+  // 'awaiting information' placeholder until it is filled in.
+  pending: ['address', 'guidestar', 'team'],
 }
 
 /**
@@ -318,4 +326,20 @@ export function twitterSite(): string | undefined {
 /** Returns the OG/Twitter card description, falling back to the longer page description. */
 export function cardDescription(): string {
   return siteConfig.shortDescription.trim() || siteConfig.description
+}
+
+/** True when `field` is listed in `siteConfig.pending`. */
+export function isPending(field: PendingField): boolean {
+  return siteConfig.pending?.includes(field) ?? false
+}
+
+/**
+ * The charity's published phone number (both `display` and `tel` set), or
+ * null. A pending or missing number is never shown as a dialable link.
+ */
+export function publishedPhone(): { display: string; tel: string } | null {
+  if (isPending('phone')) return null
+  const display = siteConfig.phone.display.trim()
+  const tel = siteConfig.phone.tel.trim()
+  return display && tel ? { display, tel } : null
 }
