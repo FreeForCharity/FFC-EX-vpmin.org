@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 jest.mock('next/font/local', () => ({
@@ -41,7 +41,11 @@ it('uses committed local files and includes the redistribution licenses', () => 
     }
   }
   for (const family of ['opensans', 'lato', 'faustina']) {
-    expect(existsSync(resolve(process.cwd(), 'src/fonts', `${family}-OFL.txt`))).toBe(true)
+    const license = `${family}-OFL.txt`
+    expect(existsSync(resolve(process.cwd(), 'src/fonts', license))).toBe(true)
+    expect(readFileSync(resolve(process.cwd(), 'public/fonts', license), 'utf8')).toBe(
+      readFileSync(resolve(process.cwd(), 'src/fonts', license), 'utf8')
+    )
   }
 })
 
