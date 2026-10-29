@@ -19,10 +19,8 @@ const GTM_ID = analyticsConfig.gtmId
  * maintainer, never by a visitor. It matters because `isConfigured()` only
  * rejects placeholders — nothing validates the SHAPE of what lands here.
  *
- * Deliberately local rather than imported from the cookie-consent component,
- * which exports the same helper: that module is `'use client'`, so importing
- * from it makes this a client-boundary call and breaks the build wherever
- * this component renders on the server.
+ * Kept local to this component: it is the only place a config value is
+ * interpolated into an inline script, so there is no shared helper to import.
  */
 function scriptString(value: string): string {
   return JSON.stringify(value)

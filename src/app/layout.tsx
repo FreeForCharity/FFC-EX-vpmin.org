@@ -114,9 +114,10 @@ export default function RootLayout({
             above the GoogleTagManager component rather than a next/script:
             the consent state has to already be in the dataLayer when GTM/GA4
             initialise. Denied worldwide: one unscoped default withholds
-            analytics and ad storage from every visitor until they opt in, so
-            there is no region left for Google to resolve from the visitor's
-            IP address. See
+            analytics, ad and personalisation storage (and the ad_user_data /
+            ad_personalization signals) from every visitor until they opt in,
+            so there is no region left for Google to resolve from the
+            visitor's IP address. See
             src/lib/consent-mode.ts. */}
         <script dangerouslySetInnerHTML={{ __html: CONSENT_MODE_BOOTSTRAP }} />
         <GoogleTagManager />

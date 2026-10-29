@@ -24,11 +24,18 @@ describe('CONSENT_MODE_BOOTSTRAP', () => {
     // one-line edit that every presence-only assertion would still pass.
     expect(CONSENT_MODE_BOOTSTRAP).not.toContain("'analytics_storage': 'granted'")
     expect(CONSENT_MODE_BOOTSTRAP).not.toContain("'ad_storage': 'granted'")
+    expect(CONSENT_MODE_BOOTSTRAP).not.toContain("'personalization_storage': 'granted'")
     expect(CONSENT_MODE_BOOTSTRAP).not.toContain("'region'")
   })
 
-  it('denies every ad signal, not just analytics', () => {
-    for (const signal of ['ad_storage', 'ad_user_data', 'ad_personalization']) {
+  it('denies every measurement and personalisation signal, not just analytics', () => {
+    for (const signal of [
+      'analytics_storage',
+      'ad_storage',
+      'ad_user_data',
+      'ad_personalization',
+      'personalization_storage',
+    ]) {
       expect(CONSENT_MODE_BOOTSTRAP).toContain(`'${signal}': 'denied'`)
     }
     expect(CONSENT_MODE_BOOTSTRAP).toContain("'functionality_storage': 'granted'")
