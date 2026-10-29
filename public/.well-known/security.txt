@@ -15,7 +15,7 @@
 Contact: mailto:info@viewpointministriesinternational.org
 Expires: 2027-01-01T00:00:00.000Z
 Preferred-Languages: en
-Canonical: https://freeforcharity.github.io/FFC-EX-vpmin.org/.well-known/security.txt
-Canonical: https://freeforcharity.github.io/FFC-EX-vpmin.org/security.txt
-Policy: https://freeforcharity.github.io/FFC-EX-vpmin.org/vulnerability-disclosure-policy/
-Acknowledgments: https://freeforcharity.github.io/FFC-EX-vpmin.org/security-acknowledgements/
+Canonical: https://vpmin.org/.well-known/security.txt
+Canonical: https://vpmin.org/security.txt
+Policy: https://vpmin.org/vulnerability-disclosure-policy/
+Acknowledgments: https://vpmin.org/security-acknowledgements/
