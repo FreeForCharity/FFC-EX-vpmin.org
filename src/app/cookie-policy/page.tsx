@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema'
 import { pageMetadata } from '@/lib/page-metadata'
+import { ContactEmail } from '@/components/ui/ContactDetails'
+import { publishedPhone, siteConfig } from '@/lib/site.config'
 
 const PAGE_NAME = 'Cookie Policy'
 // Trailing slash to match next.config's `trailingSlash: true` — the export
@@ -12,7 +14,7 @@ const CANONICAL_PATH = '/cookie-policy/'
 // per-page OG/Twitter handling is documented in src/lib/page-metadata.ts.
 export const metadata: Metadata = pageMetadata({
   title: PAGE_NAME,
-  description: 'Cookie Policy for Free For Charity website',
+  description: `Cookie Policy for ${siteConfig.name} website`,
   canonical: CANONICAL_PATH,
 })
 
@@ -20,6 +22,7 @@ export const metadata: Metadata = pageMetadata({
 const LAST_UPDATED = 'August 30, 2026'
 
 export default function CookiePolicy() {
+  const phone = publishedPhone()
   return (
     <div className="pt-[140px] pb-[54px]">
       <BreadcrumbSchema name={PAGE_NAME} path={CANONICAL_PATH} />
@@ -505,20 +508,17 @@ export default function CookiePolicy() {
           </p>
           <ul className="list-inside list-disc space-y-[4px] pb-[1em]">
             <li className="text-[14px] text-[#666] leading-[24px] font-[500]">
-              <strong>Email:</strong>{' '}
-              <a href="mailto:privacy@freeforcharity.org" className="text-blue-600 underline">
-                privacy@freeforcharity.org
-              </a>
+              <strong>Email:</strong> <ContactEmail className="text-blue-600 underline" />
             </li>
-            <li className="text-[14px] text-[#666] leading-[24px] font-[500]">
-              <strong>Emergency Contact:</strong> Clarke Moyer
-            </li>
-            <li className="text-[14px] text-[#666] leading-[24px] font-[500]">
-              <strong>Phone:</strong>{' '}
-              <a href="tel:520-222-8104" className="text-blue-600 underline">
-                520-222-8104
-              </a>
-            </li>
+            {/* Only a configured number is shown, matching the footer's phone guard. */}
+            {phone && (
+              <li className="text-[14px] text-[#666] leading-[24px] font-[500]">
+                <strong>Phone:</strong>{' '}
+                <a href={`tel:${phone.tel}`} className="text-blue-600 underline">
+                  {phone.display}
+                </a>
+              </li>
+            )}
           </ul>
 
           {/* Section 8 */}
