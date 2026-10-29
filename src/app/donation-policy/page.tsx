@@ -14,7 +14,6 @@ export const metadata: Metadata = pageMetadata({
 })
 
 // Approved by the charity in the issue-remediation session on October 29, 2026.
-// The requested deletion of "Refunds are not guaranteed" is intentional.
 const sections = [
   {
     title: 'How donations help',
