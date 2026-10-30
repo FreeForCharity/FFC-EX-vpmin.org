@@ -91,6 +91,19 @@ for (const page of pages) {
   }
 }
 
+// Font license notices must accompany the deployed font assets, not only
+// their source files. Next copies public/fonts into the static export.
+for (const family of ['opensans', 'lato', 'faustina']) {
+  const name = `${family}-OFL.txt`
+  try {
+    const source = await readFile(join(ROOT, 'src/fonts', name), 'utf8')
+    const published = await readFile(join(OUT, 'fonts', name), 'utf8')
+    if (source !== published) errors.push(`fonts/${name}: license differs from source.`)
+  } catch {
+    errors.push(`fonts/${name}: font license missing from the static export.`)
+  }
+}
+
 if (errors.length) {
   console.error('\n❌ Built-output verification failed:')
   for (const e of errors) console.error('  - ' + e)

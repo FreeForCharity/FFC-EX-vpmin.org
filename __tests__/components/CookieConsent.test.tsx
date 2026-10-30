@@ -115,7 +115,12 @@ describe('CookieConsent Google Consent Mode integration', () => {
     window.gtag = gtag
     localStorageMock.setItem(
       'cookie-consent',
-      JSON.stringify({ necessary: true, functional: true, analytics: true, marketing: false })
+      JSON.stringify({
+        necessary: true,
+        functional: true,
+        analytics: true,
+        marketing: false,
+      })
     )
 
     render(<CookieConsent />)
@@ -138,7 +143,12 @@ describe('CookieConsent Google Consent Mode integration', () => {
     window.gtag = gtag
     localStorageMock.setItem(
       'cookie-consent',
-      JSON.stringify({ necessary: true, functional: true, analytics: false, marketing: false })
+      JSON.stringify({
+        necessary: true,
+        functional: true,
+        analytics: false,
+        marketing: false,
+      })
     )
 
     render(<CookieConsent />)
@@ -179,7 +189,12 @@ describe('CookieConsent Google Consent Mode integration', () => {
     document.cookie = '_fbp=stale-permissive-default'
     localStorageMock.setItem(
       'cookie-consent',
-      JSON.stringify({ necessary: true, functional: true, analytics: false, marketing: false })
+      JSON.stringify({
+        necessary: true,
+        functional: true,
+        analytics: false,
+        marketing: false,
+      })
     )
 
     render(<CookieConsent />)
@@ -193,7 +208,12 @@ describe('CookieConsent Google Consent Mode integration', () => {
   it('does not load Clarity or Meta Pixel without an explicit grant', async () => {
     localStorageMock.setItem(
       'cookie-consent',
-      JSON.stringify({ necessary: true, functional: true, analytics: false, marketing: false })
+      JSON.stringify({
+        necessary: true,
+        functional: true,
+        analytics: false,
+        marketing: false,
+      })
     )
 
     render(<CookieConsent />)

@@ -34,13 +34,19 @@ test.describe('Cookie Consent Banner', () => {
 
     // Verify all three buttons are present
     await expect(
-      banner.getByRole('button', { name: testConfig.cookieConsent.buttons.declineAll })
+      banner.getByRole('button', {
+        name: testConfig.cookieConsent.buttons.declineAll,
+      })
     ).toBeVisible()
     await expect(
-      banner.getByRole('button', { name: testConfig.cookieConsent.buttons.customize })
+      banner.getByRole('button', {
+        name: testConfig.cookieConsent.buttons.customize,
+      })
     ).toBeVisible()
     await expect(
-      banner.getByRole('button', { name: testConfig.cookieConsent.buttons.acceptAll })
+      banner.getByRole('button', {
+        name: testConfig.cookieConsent.buttons.acceptAll,
+      })
     ).toBeVisible()
 
     // Verify policy links are present
@@ -64,7 +70,11 @@ test.describe('Cookie Consent Banner', () => {
     await expect(banner).toBeVisible()
 
     // Click Decline All
-    await page.getByRole('button', { name: testConfig.cookieConsent.buttons.declineAll }).click()
+    await page
+      .getByRole('button', {
+        name: testConfig.cookieConsent.buttons.declineAll,
+      })
+      .click()
 
     // Banner should be hidden
     await expect(banner).not.toBeVisible()
@@ -97,7 +107,11 @@ test.describe('Cookie Consent Banner', () => {
     page,
   }) => {
     // Decline all cookies
-    await page.getByRole('button', { name: testConfig.cookieConsent.buttons.declineAll }).click()
+    await page
+      .getByRole('button', {
+        name: testConfig.cookieConsent.buttons.declineAll,
+      })
+      .click()
 
     // Reload the page
     await page.reload()
@@ -146,10 +160,14 @@ test.describe('Cookie Preferences Modal', () => {
 
     // Verify action buttons are present
     await expect(
-      modal.getByRole('button', { name: testConfig.cookieConsent.buttons.savePreferences })
+      modal.getByRole('button', {
+        name: testConfig.cookieConsent.buttons.savePreferences,
+      })
     ).toBeVisible()
     await expect(
-      modal.getByRole('button', { name: testConfig.cookieConsent.buttons.cancel })
+      modal.getByRole('button', {
+        name: testConfig.cookieConsent.buttons.cancel,
+      })
     ).toBeVisible()
   })
 
@@ -212,10 +230,14 @@ test.describe('Cookie Preferences Modal', () => {
 
     // Find disabled checkboxes by their section heading (more specific selector)
     // The disabled checkboxes are within the section that has both h3 heading and the checkbox
-    const necessaryHeading = modal.getByRole('heading', { name: 'Necessary Cookies' })
+    const necessaryHeading = modal.getByRole('heading', {
+      name: 'Necessary Cookies',
+    })
     await expect(necessaryHeading).toBeVisible()
 
-    const functionalHeading = modal.getByRole('heading', { name: 'Functional Cookies' })
+    const functionalHeading = modal.getByRole('heading', {
+      name: 'Functional Cookies',
+    })
     await expect(functionalHeading).toBeVisible()
 
     // All disabled checkboxes in the modal should be checked (necessary and functional)
@@ -241,11 +263,15 @@ test.describe('Cookie Preferences Modal', () => {
     await expect(modal).toBeVisible()
 
     // Find analytics toggle (the checkbox with aria-label)
-    const analyticsToggle = modal.getByRole('checkbox', { name: 'Enable analytics cookies' })
+    const analyticsToggle = modal.getByRole('checkbox', {
+      name: 'Enable analytics cookies',
+    })
     await expect(analyticsToggle).not.toBeChecked()
 
     // Find marketing toggle
-    const marketingToggle = modal.getByRole('checkbox', { name: 'Enable marketing cookies' })
+    const marketingToggle = modal.getByRole('checkbox', {
+      name: 'Enable marketing cookies',
+    })
     await expect(marketingToggle).not.toBeChecked()
 
     // Toggle analytics on (use force: true because the toggle switch has an overlay div)
@@ -265,13 +291,17 @@ test.describe('Cookie Preferences Modal', () => {
     await expect(modal).toBeVisible()
 
     // Enable only analytics (not marketing) - use force: true because the toggle switch has an overlay div
-    const analyticsToggle = modal.getByRole('checkbox', { name: 'Enable analytics cookies' })
+    const analyticsToggle = modal.getByRole('checkbox', {
+      name: 'Enable analytics cookies',
+    })
     await analyticsToggle.click({ force: true })
     await expect(analyticsToggle).toBeChecked()
 
     // Save preferences
     await page
-      .getByRole('button', { name: testConfig.cookieConsent.buttons.savePreferences })
+      .getByRole('button', {
+        name: testConfig.cookieConsent.buttons.savePreferences,
+      })
       .click()
 
     // Modal and banner should be hidden

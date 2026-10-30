@@ -58,7 +58,13 @@ export const metadata: Metadata = {
       { url: assetPath('/favicon.ico'), sizes: '32x32' },
       { url: assetPath('/icon.png'), type: 'image/png', sizes: '32x32' },
     ],
-    apple: [{ url: assetPath('/apple-icon.png'), sizes: '180x180', type: 'image/png' }],
+    apple: [
+      {
+        url: assetPath('/apple-icon.png'),
+        sizes: '180x180',
+        type: 'image/png',
+      },
+    ],
   },
   // Manifest is generated dynamically from siteConfig via src/app/manifest.ts;
   // Next.js auto-wires the <link rel="manifest"> tag, so we don't set it here.

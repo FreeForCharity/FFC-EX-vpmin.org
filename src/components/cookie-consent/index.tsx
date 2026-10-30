@@ -516,7 +516,10 @@ export default function CookieConsent() {
                     type="checkbox"
                     checked={preferences.analytics}
                     onChange={(e) =>
-                      setPreferences({ ...preferences, analytics: e.target.checked })
+                      setPreferences({
+                        ...preferences,
+                        analytics: e.target.checked,
+                      })
                     }
                     className="sr-only peer"
                     aria-label="Enable analytics cookies"
@@ -541,7 +544,10 @@ export default function CookieConsent() {
                     type="checkbox"
                     checked={preferences.marketing}
                     onChange={(e) =>
-                      setPreferences({ ...preferences, marketing: e.target.checked })
+                      setPreferences({
+                        ...preferences,
+                        marketing: e.target.checked,
+                      })
                     }
                     className="sr-only peer"
                     aria-label="Enable marketing cookies"

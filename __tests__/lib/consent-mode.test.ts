@@ -67,14 +67,24 @@ describe('updateGoogleConsent', () => {
   it('is a no-op when gtag is not installed', () => {
     delete window.gtag
     expect(() =>
-      updateGoogleConsent({ necessary: true, functional: true, analytics: true, marketing: true })
+      updateGoogleConsent({
+        necessary: true,
+        functional: true,
+        analytics: true,
+        marketing: true,
+      })
     ).not.toThrow()
   })
 
   it('maps analytics → analytics_storage and marketing → ad/personalization storage', () => {
     const gtag = jest.fn()
     window.gtag = gtag
-    updateGoogleConsent({ necessary: true, functional: true, analytics: true, marketing: false })
+    updateGoogleConsent({
+      necessary: true,
+      functional: true,
+      analytics: true,
+      marketing: false,
+    })
     expect(gtag).toHaveBeenCalledWith('consent', 'update', {
       analytics_storage: 'granted',
       ad_storage: 'denied',
@@ -89,7 +99,12 @@ describe('updateGoogleConsent', () => {
   it('denies analytics_storage on decline while keeping security_storage granted', () => {
     const gtag = jest.fn()
     window.gtag = gtag
-    updateGoogleConsent({ necessary: true, functional: true, analytics: false, marketing: false })
+    updateGoogleConsent({
+      necessary: true,
+      functional: true,
+      analytics: false,
+      marketing: false,
+    })
     const payload = gtag.mock.calls[0][2]
     expect(payload.analytics_storage).toBe('denied')
     expect(payload.security_storage).toBe('granted')

@@ -77,7 +77,12 @@ describe('CookieConsent consent-before-GA ordering', () => {
   it('pushes the stored denial as a consent update BEFORE injecting the GA4 script', async () => {
     localStorageMock.setItem(
       'cookie-consent',
-      JSON.stringify({ necessary: true, functional: true, analytics: false, marketing: false })
+      JSON.stringify({
+        necessary: true,
+        functional: true,
+        analytics: false,
+        marketing: false,
+      })
     )
 
     render(<CookieConsent />)
