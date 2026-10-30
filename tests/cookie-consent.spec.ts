@@ -34,13 +34,19 @@ test.describe('Cookie Consent Banner', () => {
 
     // Verify all three buttons are present
     await expect(
-      banner.getByRole('button', { name: testConfig.cookieConsent.buttons.declineAll })
+      banner.getByRole('button', {
+        name: testConfig.cookieConsent.buttons.declineAll,
+      })
     ).toBeVisible()
     await expect(
-      banner.getByRole('button', { name: testConfig.cookieConsent.buttons.customize })
+      banner.getByRole('button', {
+        name: testConfig.cookieConsent.buttons.customize,
+      })
     ).toBeVisible()
     await expect(
-      banner.getByRole('button', { name: testConfig.cookieConsent.buttons.acceptAll })
+      banner.getByRole('button', {
+        name: testConfig.cookieConsent.buttons.acceptAll,
+      })
     ).toBeVisible()
 
     // Verify policy links are present
@@ -64,7 +70,11 @@ test.describe('Cookie Consent Banner', () => {
     await expect(banner).toBeVisible()
 
     // Click Decline All
-    await page.getByRole('button', { name: testConfig.cookieConsent.buttons.declineAll }).click()
+    await page
+      .getByRole('button', {
+        name: testConfig.cookieConsent.buttons.declineAll,
+      })
+      .click()
 
     // Banner should be hidden
     await expect(banner).not.toBeVisible()
@@ -97,7 +107,11 @@ test.describe('Cookie Consent Banner', () => {
     page,
   }) => {
     // Decline all cookies
-    await page.getByRole('button', { name: testConfig.cookieConsent.buttons.declineAll }).click()
+    await page
+      .getByRole('button', {
+        name: testConfig.cookieConsent.buttons.declineAll,
+      })
+      .click()
 
     // Reload the page
     await page.reload()
@@ -146,10 +160,14 @@ test.describe('Cookie Preferences Modal', () => {
 
     // Verify action buttons are present
     await expect(
-      modal.getByRole('button', { name: testConfig.cookieConsent.buttons.savePreferences })
+      modal.getByRole('button', {
+        name: testConfig.cookieConsent.buttons.savePreferences,
+      })
     ).toBeVisible()
     await expect(
-      modal.getByRole('button', { name: testConfig.cookieConsent.buttons.cancel })
+      modal.getByRole('button', {
+        name: testConfig.cookieConsent.buttons.cancel,
+      })
     ).toBeVisible()
   })
 
@@ -212,10 +230,14 @@ test.describe('Cookie Preferences Modal', () => {
 
     // Find disabled checkboxes by their section heading (more specific selector)
     // The disabled checkboxes are within the section that has both h3 heading and the checkbox
-    const necessaryHeading = modal.getByRole('heading', { name: 'Necessary Cookies' })
+    const necessaryHeading = modal.getByRole('heading', {
+      name: 'Necessary Cookies',
+    })
     await expect(necessaryHeading).toBeVisible()
 
-    const functionalHeading = modal.getByRole('heading', { name: 'Functional Cookies' })
+    const functionalHeading = modal.getByRole('heading', {
+      name: 'Functional Cookies',
+    })
     await expect(functionalHeading).toBeVisible()
 
     // All disabled checkboxes in the modal should be checked (necessary and functional)
@@ -241,11 +263,15 @@ test.describe('Cookie Preferences Modal', () => {
     await expect(modal).toBeVisible()
 
     // Find analytics toggle (the checkbox with aria-label)
-    const analyticsToggle = modal.getByRole('checkbox', { name: 'Enable analytics cookies' })
+    const analyticsToggle = modal.getByRole('checkbox', {
+      name: 'Enable analytics cookies',
+    })
     await expect(analyticsToggle).not.toBeChecked()
 
     // Find marketing toggle
-    const marketingToggle = modal.getByRole('checkbox', { name: 'Enable marketing cookies' })
+    const marketingToggle = modal.getByRole('checkbox', {
+      name: 'Enable marketing cookies',
+    })
     await expect(marketingToggle).not.toBeChecked()
 
     // Toggle analytics on (use force: true because the toggle switch has an overlay div)
@@ -265,13 +291,17 @@ test.describe('Cookie Preferences Modal', () => {
     await expect(modal).toBeVisible()
 
     // Enable only analytics (not marketing) - use force: true because the toggle switch has an overlay div
-    const analyticsToggle = modal.getByRole('checkbox', { name: 'Enable analytics cookies' })
+    const analyticsToggle = modal.getByRole('checkbox', {
+      name: 'Enable analytics cookies',
+    })
     await analyticsToggle.click({ force: true })
     await expect(analyticsToggle).toBeChecked()
 
     // Save preferences
     await page
-      .getByRole('button', { name: testConfig.cookieConsent.buttons.savePreferences })
+      .getByRole('button', {
+        name: testConfig.cookieConsent.buttons.savePreferences,
+      })
       .click()
 
     // Modal and banner should be hidden
@@ -295,13 +325,11 @@ test.describe('Cookie Preferences Modal', () => {
 })
 
 test.describe('Google Consent Mode bootstrap', () => {
-  test('sets the regional consent defaults inline, before any Google tag loads', async ({
-    page,
-  }) => {
+  test('sets a single global denial inline, before any Google tag loads', async ({ page }) => {
     await page.goto('/')
 
-    // The bootstrap is an inline <head> script, so the two consent defaults
-    // are in the dataLayer synchronously — no waiting on lazyOnload GTM.
+    // The bootstrap is an inline <head> script, so the consent default is
+    // in the dataLayer synchronously — no waiting on lazyOnload GTM.
     const defaults = await page.evaluate(() => {
       const dl = (window as unknown as { dataLayer?: unknown[] }).dataLayer || []
       return dl
@@ -310,24 +338,27 @@ test.describe('Google Consent Mode bootstrap', () => {
         .map((args) => args[2] as Record<string, unknown>)
     })
 
-    expect(defaults).toHaveLength(2)
+    // ONE default, applying to everyone. A second call — or a `region` on
+    // this one — would reintroduce a class of visitor measured before they
+    // consented, which is the whole thing this asserts against.
+    expect(defaults).toHaveLength(1)
 
-    // Region-scoped denial first: EEA/UK/CH (32 codes) denied by default,
-    // holding tags briefly for a stored choice.
     expect(defaults[0].analytics_storage).toBe('denied')
     expect(defaults[0].ad_storage).toBe('denied')
+    expect(defaults[0].ad_user_data).toBe('denied')
+    expect(defaults[0].ad_personalization).toBe('denied')
     expect(defaults[0].wait_for_update).toBe(500)
-    expect(Array.isArray(defaults[0].region)).toBe(true)
-    expect(defaults[0].region as string[]).toHaveLength(32)
+    expect(defaults[0].region).toBeUndefined()
 
-    // Then the unscoped grant for everyone else (region-specific settings
-    // take precedence, so this does not weaken the EEA/UK/CH denial). It
-    // also carries wait_for_update: GTM loads from the layout here, so a
-    // returning non-EEA decliner's stored choice needs the same window.
-    expect(defaults[1].analytics_storage).toBe('granted')
-    expect(defaults[1].ad_storage).toBe('granted')
-    expect(defaults[1].wait_for_update).toBe(500)
-    expect(defaults[1].region).toBeUndefined()
+    // functionality/security stay granted: they carry no tracking, and the
+    // banner itself depends on functionality storage to remember a choice.
+    expect(defaults[0].functionality_storage).toBe('granted')
+    expect(defaults[0].security_storage).toBe('granted')
+
+    // Asserted as an absence too — reinstating a permissive default is a
+    // one-line edit that every positive assertion above would still pass.
+    const granted = defaults.filter((d) => d.analytics_storage === 'granted')
+    expect(granted).toHaveLength(0)
   })
 
   test('accepting the banner pushes a gtag consent update', async ({ page, context }) => {
