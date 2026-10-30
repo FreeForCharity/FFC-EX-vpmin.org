@@ -14,12 +14,11 @@
 // still return 404, so genuine broken links are still caught.
 
 import { createServer } from 'node:http'
-import { spawn } from 'node:child_process'
 import { readFile, stat } from 'node:fs/promises'
-import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs'
-import { tmpdir } from 'node:os'
+import { readFileSync } from 'node:fs'
 import { join, normalize, extname, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { LinkChecker, LinkState } from 'linkinator'
 
 const ROOT = fileURLToPath(new URL('../out', import.meta.url))
 
@@ -130,37 +129,55 @@ function shutdown(code) {
   setTimeout(() => process.exit(code), 2000).unref()
 }
 
-// Listen on an ephemeral port to avoid collisions in CI.
-server.listen(0, '127.0.0.1', () => {
+// Keep the preview server alive until the API crawl completes. The CLI can
+// otherwise exit 13 with an unsettled top-level await while delayed retries
+// are queued and no referenced sockets remain.
+server.listen(0, '127.0.0.1', async () => {
   const { port } = server.address()
   const target = `http://127.0.0.1:${port}`
-
-  // Extend the committed config with a URL rewrite mapping the site's
-  // canonical origin to this local server. We go through a generated config
-  // file (rather than linkinator's --url-rewrite-* CLI flags, which are broken
-  // by a casing bug in v7.6.1) because the config-file keys are honored.
-  const baseConfig = JSON.parse(
-    readFileSync(fileURLToPath(new URL('../.linkinatorrc.json', import.meta.url)), 'utf8')
-  )
-  const origin = canonicalOrigin()
-  if (origin) {
-    baseConfig.urlRewriteSearch = `^${escapeRegExp(origin)}`
-    baseConfig.urlRewriteReplace = target
-  }
-  const runtimeConfigPath = join(mkdtempSync(join(tmpdir(), 'linkinator-')), 'config.json')
-  writeFileSync(runtimeConfigPath, JSON.stringify(baseConfig))
-
-  const args = [target, '--recurse', '--config', runtimeConfigPath]
-  // Spawn linkinator from PATH — npm puts node_modules/.bin on PATH for
-  // scripts, so `npm run check-links` resolves it cross-platform. shell:true
-  // on Windows lets the `linkinator.cmd` shim resolve.
-  const child = spawn('linkinator', args, {
-    stdio: 'inherit',
-    shell: process.platform === 'win32',
-  })
-  child.on('exit', (code) => shutdown(code ?? 1))
-  child.on('error', (err) => {
+  try {
+    const { skip, ...config } = JSON.parse(
+      readFileSync(fileURLToPath(new URL('../.linkinatorrc.json', import.meta.url)), 'utf8')
+    )
+    const origin = canonicalOrigin()
+    const checker = new LinkChecker()
+    checker.on('link', (link) => {
+      console.log(`[${link.status ?? link.state}] ${link.url}`)
+    })
+    checker.on('retry', ({ url, secondsUntilRetry }) => {
+      console.log(`Retrying: ${url} in ${secondsUntilRetry} seconds.`)
+    })
+    // Retain a deadline so a stalled dependency fails rather than hanging CI.
+    const deadline = setTimeout(
+      () => {
+        console.error('Link check did not complete within five minutes.')
+        shutdown(1)
+      },
+      5 * 60 * 1000
+    )
+    try {
+      const result = await checker.check({
+        ...config,
+        path: target,
+        recurse: true,
+        linksToSkip: skip,
+        urlRewriteExpressions: origin
+          ? [{ pattern: new RegExp(`^${escapeRegExp(origin)}`), replacement: target }]
+          : [],
+      })
+      const broken = result.links.filter((link) => link.state === LinkState.BROKEN)
+      if (!result.passed) {
+        for (const link of broken) console.error(`[${link.status ?? 0}] ${link.url}`)
+        console.error(`ERROR: Detected ${broken.length} broken links.`)
+      } else {
+        console.log(`Successfully scanned ${result.links.length} links.`)
+      }
+      shutdown(result.passed ? 0 : 1)
+    } finally {
+      clearTimeout(deadline)
+    }
+  } catch (err) {
     console.error('Failed to run linkinator:', err)
     shutdown(1)
-  })
+  }
 })
