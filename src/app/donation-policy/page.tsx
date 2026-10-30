@@ -2,29 +2,61 @@ import type { Metadata } from 'next'
 import BreadcrumbSchema from '@/components/seo/BreadcrumbSchema'
 import { pageMetadata } from '@/lib/page-metadata'
 import { ContactEmail } from '@/components/ui/ContactDetails'
-import { PENDING_TEXT, isPending, publishedPhone, siteConfig } from '@/lib/site.config'
+import { siteConfig } from '@/lib/site.config'
 
 const PAGE_NAME = 'Donation Policy'
-// Trailing slash to match next.config's `trailingSlash: true` — the export
-// writes donation-policy/index.html and nothing answers at /donation-policy.
 const CANONICAL_PATH = '/donation-policy/'
 
-// Bare page name as title (the root layout template appends the brand);
-// per-page OG/Twitter handling is documented in src/lib/page-metadata.ts.
 export const metadata: Metadata = pageMetadata({
   title: PAGE_NAME,
   description: `Donation Policy for ${siteConfig.name} website`,
   canonical: CANONICAL_PATH,
 })
 
+// Approved by the charity in the issue-remediation session on October 29, 2026.
+const sections = [
+  {
+    title: 'How donations help',
+    paragraphs: [
+      'Your donations support our ministries and community outreach, including sharing practical Christian teaching and providing support and assistance to the community.',
+    ],
+  },
+  {
+    title: 'Payment processing',
+    paragraphs: [
+      'Online donations made through our PayPal donation link are processed by PayPal. Please review the amount and whether your gift is one-time or recurring before completing your donation.',
+    ],
+  },
+  {
+    title: 'Receipts and acknowledgments',
+    paragraphs: [
+      'Please retain your payment confirmation. To request a donation acknowledgment or correct your donor information, contact us with your name, donation date, amount, and transaction reference. Do not send card numbers or account passwords.',
+      'Donations may be tax-deductible to the extent permitted by law. A payment confirmation may not contain everything needed for your tax records; contact us if you need a written acknowledgment.',
+    ],
+  },
+  {
+    title: 'Refund requests',
+    paragraphs: [
+      'Donations are generally non-refundable. If you made a donation in error or believe you were charged twice, please contact us within 30 days of the transaction. We will review requests individually.',
+      'For suspected unauthorized payments, contact PayPal or your payment provider promptly.',
+    ],
+  },
+  {
+    title: 'Recurring donations',
+    paragraphs: [
+      'If you established a recurring donation through PayPal, you may cancel future payments through your PayPal account’s automatic-payment settings. Contact us if you need assistance.',
+      'Cancelling future payments does not automatically refund donations already processed. Please submit any refund request separately.',
+    ],
+  },
+  {
+    title: 'Donor information',
+    paragraphs: [
+      'We use the information you provide to administer donations, respond to inquiries, and maintain required records. PayPal handles payment information under its own privacy policy. Please do not email sensitive financial information.',
+    ],
+  },
+]
+
 export default function DonationPolicy() {
-  // A 501(c)(3) (taxStatusLabel set) may call a donation tax-deductible.
-  const taxExempt = siteConfig.taxStatusLabel.trim() !== ''
-  const phone = publishedPhone()
-  // The EIN clause: the EIN itself, the pending placeholder while the charity
-  // has not supplied it, or nothing when it has none (see PendingField).
-  const ein = siteConfig.ein.trim()
-  const einClause = isPending('ein') ? ` (EIN: ${PENDING_TEXT})` : ein ? ` (EIN: ${ein})` : ''
   return (
     <div className="ffc-container py-16">
       <BreadcrumbSchema name={PAGE_NAME} path={CANONICAL_PATH} />
@@ -35,73 +67,29 @@ export default function DonationPolicy() {
 
         <div className="prose max-w-none font-[var(--font-lato)] text-[18px] leading-[28px]">
           <p>
-            <strong>Effective Date:</strong> January 1, 2024
+            <strong>{siteConfig.name}</strong>
+            <br />
+            <strong>EIN: {siteConfig.ein}</strong>
+            <br />A Registered 501(c)(3) Nonprofit Organization
           </p>
 
-          <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
-            Tax Deductibility
-          </h2>
-          {taxExempt ? (
-            <p>
-              {siteConfig.name} is a qualified 501(c)(3) nonprofit organization{einClause}.
-              Donations are tax-deductible to the full extent allowed by law.
-            </p>
-          ) : (
-            <p>
-              {siteConfig.name}
-              {einClause} has not yet received IRS recognition as a 501(c)(3) organization, so
-              donations may not be tax-deductible. Please consult a tax advisor before claiming a
-              deduction.
-            </p>
-          )}
+          {sections.map(({ title, paragraphs }) => (
+            <section key={title}>
+              <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
+                {title}
+              </h2>
+              {paragraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </section>
+          ))}
 
           <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
-            Use of Donations
+            Contact
           </h2>
-          {/* The charity's own words, from its Donate page. */}
+          <p>For donation questions, acknowledgment requests, or refund inquiries:</p>
           <p>
-            Your donation will help us to continue providing needed and necessary support and
-            assistance to the community, further the prospects of peaceable living, and overcome
-            challenges through the provision of instructions and information on practical Christian
-            living.
-          </p>
-
-          <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
-            Donation Processing
-          </h2>
-          <p>
-            Donations are processed securely through our payment partners. You will receive a
-            receipt for tax purposes via email after your donation is processed.
-          </p>
-
-          <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
-            Refund Policy
-          </h2>
-          <p>
-            We generally do not provide refunds for donations. However, if you believe an error has
-            occurred, please contact us within 30 days of your donation.
-          </p>
-
-          <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
-            Privacy
-          </h2>
-          <p>
-            Donor information is kept confidential and will not be shared with third parties except
-            as required by law.
-          </p>
-
-          <h2 className="font-[var(--font-faustina)] text-[32px] leading-[40px] mt-8 mb-4">
-            Contact Us
-          </h2>
-          <p>For questions about donations or this policy, please contact us at:</p>
-          <p>
-            Email: <ContactEmail className="text-primary underline" />
-            {phone && (
-              <>
-                <br />
-                Phone: {phone.display}
-              </>
-            )}
+            <ContactEmail className="text-primary underline" />
           </p>
         </div>
       </div>
