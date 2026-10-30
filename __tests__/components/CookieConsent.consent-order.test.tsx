@@ -95,6 +95,38 @@ describe('CookieConsent consent-before-GA ordering', () => {
     expect(events.indexOf('consent-update')).toBeLessThan(events.indexOf('ga-script-injected'))
   })
 
+  it('pushes a stored GRANT as a consent update BEFORE injecting the GA4 script', async () => {
+    // The case the header describes: a returning visitor who accepted
+    // analytics must have that grant applied before GA4 loads, or the
+    // deny-by-default bootstrap makes their first hit cookieless.
+    const updates: unknown[] = []
+    window.gtag = (...args: unknown[]) => {
+      if (args[0] === 'consent' && args[1] === 'update') {
+        events.push('consent-update')
+        updates.push(args[2])
+      }
+    }
+    localStorageMock.setItem(
+      'cookie-consent',
+      JSON.stringify({
+        necessary: true,
+        functional: true,
+        analytics: true,
+        marketing: false,
+      })
+    )
+
+    render(<CookieConsent />)
+
+    await waitFor(() => {
+      expect(events).toContain('consent-update')
+      expect(events).toContain('ga-script-injected')
+    })
+
+    expect(events.indexOf('consent-update')).toBeLessThan(events.indexOf('ga-script-injected'))
+    expect(updates[0]).toEqual(expect.objectContaining({ analytics_storage: 'granted' }))
+  })
+
   it('still injects the GA4 script when there is no stored choice (banner showing)', async () => {
     render(<CookieConsent />)
 
