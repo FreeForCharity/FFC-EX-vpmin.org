@@ -347,7 +347,13 @@ The main page (`/`) is a single-page application composed of scrollable sections
 
 ## Content Management
 
-Content such as FAQs, Team Members, and Testimonials is stored as JSON files in the `src/data/` directory. To edit content, simply modify the JSON files directly.
+Site managers: start with [Editing the Viewpoint Ministries website](./CONTENT_EDITING.md)
+for text changes, image swaps, pull requests, deployment checks, and support.
+
+This migrated site stores most visible page content in `src/clone-content/*.html`.
+The matching `src/app/.../page.tsx` files define page metadata and load those HTML
+fragments. The template's sample FAQs, team members, and testimonials are no longer
+the content source for this site.
 
 ## Local Development
 
