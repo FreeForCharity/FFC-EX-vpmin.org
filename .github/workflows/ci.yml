@@ -41,6 +41,14 @@ jobs:
       - name: Check formatting
         run: pnpm run format:check
 
+      - name: Validate commitlint configuration
+        run: |
+          printf '%s\n' 'fix: validate commitlint configuration' | pnpm exec commitlint
+          if printf '%s\n' 'invalid commit message' | pnpm exec commitlint; then
+            echo '::error::Commitlint accepted an invalid commit message.'
+            exit 1
+          fi
+
       - name: Run linting
         run: pnpm run lint
 
