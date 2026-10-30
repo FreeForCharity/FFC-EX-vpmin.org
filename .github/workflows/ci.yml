@@ -30,7 +30,7 @@ jobs:
         uses: pnpm/action-setup@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '24'
           cache: 'pnpm'
@@ -40,6 +40,14 @@ jobs:
 
       - name: Check formatting
         run: pnpm run format:check
+
+      - name: Validate commitlint configuration
+        run: |
+          printf '%s\n' 'fix: validate commitlint configuration' | pnpm exec commitlint
+          if printf '%s\n' 'invalid commit message' | pnpm exec commitlint; then
+            echo '::error::Commitlint accepted an invalid commit message.'
+            exit 1
+          fi
 
       - name: Run linting
         run: pnpm run lint
@@ -101,7 +109,7 @@ jobs:
         uses: pnpm/action-setup@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '24'
           cache: 'pnpm'
