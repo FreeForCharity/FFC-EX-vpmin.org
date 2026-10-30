@@ -6,7 +6,7 @@ const captureDir = join(process.cwd(), 'src/clone-content')
 
 describe('static interaction replacements', () => {
   it('keeps every captured route free of backend forms and obsolete subscription links', () => {
-    const files = readdirSync(captureDir, { recursive: true }).filter((file) =>
+    const files = readdirSync(captureDir, { recursive: true, encoding: 'utf8' }).filter((file) =>
       file.endsWith('.html')
     )
     expect(files.length).toBeGreaterThan(500)
