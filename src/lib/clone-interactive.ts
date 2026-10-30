@@ -4,7 +4,7 @@ const oldSubscriptionForm =
   'https://docs.google.com/forms/d/e/1FAIpQLSf8arxVgp-DFstVZ26HvBGAEqBNg1v06VYoh2XAyrZlEogusw/viewform'
 
 function emailLink(subject: string, label: string): string {
-  return `<a href="mailto:${contactEmail}?subject=${encodeURIComponent(subject)}">${label}</a>`
+  return `<a style="color:inherit;text-decoration:underline" href="mailto:${contactEmail}?subject=${encodeURIComponent(subject)}">${label}</a>`
 }
 
 export function repairInteractiveContent(name: string, html: string): string {

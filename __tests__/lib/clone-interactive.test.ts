@@ -26,6 +26,7 @@ describe('static interaction replacements', () => {
     const result = repairInteractiveContent(name, '<h1>Page</h1><p>Content</p>')
     expect(result).toContain('mailto:info@viewpointministriesinternational.org?subject=')
     expect(result).toContain('This opens your email app.')
+    expect(result).toContain('style="color:inherit;text-decoration:underline"')
   })
 
   it('removes the obsolete form instructions from contact', () => {

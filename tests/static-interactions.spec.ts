@@ -6,14 +6,14 @@ test('newsletter and volunteering offer email actions without backend forms', as
     ['volunteers', 'Ask about volunteering by email', 'Volunteer%20enquiry'],
   ]) {
     await page.goto(`/${route}/`)
-    const link = page
-      .getByRole('link', { name: label, exact: true })
-      .filter({ visible: true })
-      .first()
+    const link = page.locator('.header-content').getByRole('link', { name: label, exact: true })
     await expect(link).toHaveAttribute(
       'href',
       `mailto:info@viewpointministriesinternational.org?subject=${subject}`
     )
+    await expect(link).toBeVisible()
+    await expect(link).toHaveCSS('color', 'rgb(255, 255, 255)')
+    await expect(link).toHaveCSS('text-decoration-line', 'underline')
     await expect(page.locator('.ffc-clone form')).toHaveCount(0)
     await expect(page.locator('a[href*="1FAIpQLSf8arxVgp"]')).toHaveCount(0)
   }
