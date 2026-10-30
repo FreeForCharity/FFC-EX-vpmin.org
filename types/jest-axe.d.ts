@@ -1,4 +1,4 @@
-// Ambient declarations for jest-axe@10, which ships no types of its own — so
+// Ambient declarations for jest-axe, which ships no types of its own — so
 // `import { axe } from 'jest-axe'` in a test is an implicit-any error under
 // `strict` once Next 16.3 started type-checking the test files.
 //

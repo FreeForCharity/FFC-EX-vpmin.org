@@ -59,7 +59,7 @@
     "eslint-plugin-prettier": "^5.5.7",
     "husky": "^9.1.7",
     "jest": "^30.5.2",
-    "jest-axe": "^10.0.0",
+    "jest-axe": "^11.0.0",
     "jest-environment-jsdom": "^30.5.2",
     "linkinator": "^8.1.0",
     "prettier": "^3.9.10",
