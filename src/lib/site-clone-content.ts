@@ -3,7 +3,11 @@
 // pointing here. Import the generated reader relatively to avoid that alias.
 import { loadCloneContent as loadCapturedContent } from './clone-content'
 import { repairCloneContent } from './clone-repairs'
+import { repairInteractiveContent } from './clone-interactive'
 
 export function loadCloneContent(name: string): string {
-  return repairCloneContent(loadCapturedContent(name), process.env.NEXT_PUBLIC_BASE_PATH || '')
+  return repairInteractiveContent(
+    name,
+    repairCloneContent(loadCapturedContent(name), process.env.NEXT_PUBLIC_BASE_PATH || '')
+  )
 }
