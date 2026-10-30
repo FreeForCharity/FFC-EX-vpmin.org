@@ -2,13 +2,12 @@
  * Ordering contract: a stored consent choice must be applied (the gtag
  * consent update pushed) BEFORE the direct GA4 script is injected.
  *
- * Without this ordering, a returning visitor OUTSIDE the EEA/UK/CH who
- * previously DECLINED analytics would get the granted-by-default bootstrap
- * replayed ahead of their stored denial: GA's config lands in the queue
- * first and a cookie-based hit could fire before the update applies. Both
- * default calls in this template's bootstrap carry wait_for_update, but
- * that is a bounded grace window (500ms), not an ordering guarantee — a
- * slow hydration can outlast it — which is exactly why the
+ * Without this ordering, a returning visitor who previously GRANTED analytics
+ * would get the deny-by-default bootstrap replayed ahead of their stored grant:
+ * GA's config lands in the queue first and its opening hit goes out cookieless,
+ * before the update applies. The bootstrap's single default call carries
+ * wait_for_update, but that is a bounded grace window (500ms), not an ordering
+ * guarantee — a slow hydration can outlast it — which is exactly why the
  * restore-before-load ordering this file locks in still matters.
  *
  * This file mocks a REAL-looking measurement ID so the loader actually
@@ -78,7 +77,12 @@ describe('CookieConsent consent-before-GA ordering', () => {
   it('pushes the stored denial as a consent update BEFORE injecting the GA4 script', async () => {
     localStorageMock.setItem(
       'cookie-consent',
-      JSON.stringify({ necessary: true, functional: true, analytics: false, marketing: false })
+      JSON.stringify({
+        necessary: true,
+        functional: true,
+        analytics: false,
+        marketing: false,
+      })
     )
 
     render(<CookieConsent />)
@@ -89,6 +93,38 @@ describe('CookieConsent consent-before-GA ordering', () => {
     })
 
     expect(events.indexOf('consent-update')).toBeLessThan(events.indexOf('ga-script-injected'))
+  })
+
+  it('pushes a stored GRANT as a consent update BEFORE injecting the GA4 script', async () => {
+    // The case the header describes: a returning visitor who accepted
+    // analytics must have that grant applied before GA4 loads, or the
+    // deny-by-default bootstrap makes their first hit cookieless.
+    const updates: unknown[] = []
+    window.gtag = (...args: unknown[]) => {
+      if (args[0] === 'consent' && args[1] === 'update') {
+        events.push('consent-update')
+        updates.push(args[2])
+      }
+    }
+    localStorageMock.setItem(
+      'cookie-consent',
+      JSON.stringify({
+        necessary: true,
+        functional: true,
+        analytics: true,
+        marketing: false,
+      })
+    )
+
+    render(<CookieConsent />)
+
+    await waitFor(() => {
+      expect(events).toContain('consent-update')
+      expect(events).toContain('ga-script-injected')
+    })
+
+    expect(events.indexOf('consent-update')).toBeLessThan(events.indexOf('ga-script-injected'))
+    expect(updates[0]).toEqual(expect.objectContaining({ analytics_storage: 'granted' }))
   })
 
   it('still injects the GA4 script when there is no stored choice (banner showing)', async () => {

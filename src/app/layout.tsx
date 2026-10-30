@@ -58,7 +58,13 @@ export const metadata: Metadata = {
       { url: assetPath('/favicon.ico'), sizes: '32x32' },
       { url: assetPath('/icon.png'), type: 'image/png', sizes: '32x32' },
     ],
-    apple: [{ url: assetPath('/apple-icon.png'), sizes: '180x180', type: 'image/png' }],
+    apple: [
+      {
+        url: assetPath('/apple-icon.png'),
+        sizes: '180x180',
+        type: 'image/png',
+      },
+    ],
   },
   // Manifest is generated dynamically from siteConfig via src/app/manifest.ts;
   // Next.js auto-wires the <link rel="manifest"> tag, so we don't set it here.
@@ -113,9 +119,11 @@ export default function RootLayout({
             tag loads, which is why it is an inline <head> script placed
             above the GoogleTagManager component rather than a next/script:
             the consent state has to already be in the dataLayer when GTM/GA4
-            initialise. Granted worldwide, denied (cookieless pings) only
-            where Google's EU User Consent Policy requires opt-in — Google
-            picks the default from the visitor's IP address. See
+            initialise. Denied worldwide: one unscoped default withholds
+            analytics, ad and personalisation storage (and the ad_user_data /
+            ad_personalization signals) from every visitor until they opt in,
+            so there is no region left for Google to resolve from the
+            visitor's IP address. See
             src/lib/consent-mode.ts. */}
         <script dangerouslySetInnerHTML={{ __html: CONSENT_MODE_BOOTSTRAP }} />
         <GoogleTagManager />

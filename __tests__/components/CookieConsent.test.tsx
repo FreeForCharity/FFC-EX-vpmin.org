@@ -115,7 +115,12 @@ describe('CookieConsent Google Consent Mode integration', () => {
     window.gtag = gtag
     localStorageMock.setItem(
       'cookie-consent',
-      JSON.stringify({ necessary: true, functional: true, analytics: true, marketing: false })
+      JSON.stringify({
+        necessary: true,
+        functional: true,
+        analytics: true,
+        marketing: false,
+      })
     )
 
     render(<CookieConsent />)
@@ -138,7 +143,12 @@ describe('CookieConsent Google Consent Mode integration', () => {
     window.gtag = gtag
     localStorageMock.setItem(
       'cookie-consent',
-      JSON.stringify({ necessary: true, functional: true, analytics: false, marketing: false })
+      JSON.stringify({
+        necessary: true,
+        functional: true,
+        analytics: false,
+        marketing: false,
+      })
     )
 
     render(<CookieConsent />)
@@ -170,15 +180,21 @@ describe('CookieConsent Google Consent Mode integration', () => {
   })
 
   it('deletes non-granted categories’ cookies on load, even without a prior stored grant', async () => {
-    // Under the regional Consent Mode defaults, Google tags can set cookies
-    // BEFORE the visitor makes any choice (outside the EEA/UK/CH). Applying
-    // a denying choice must therefore delete per category on every apply,
-    // not only on withdrawal of a previously stored grant.
-    document.cookie = '_ga=stale-regional-default'
-    document.cookie = '_fbp=stale-regional-default'
+    // Cookies can predate any stored choice: this site granted storage outside
+    // the EEA/UK/CH until recently, so a returning visitor may still carry a
+    // `_ga` set under that permissive default. Applying a denying choice must
+    // therefore delete per category on every apply, not only on withdrawal of a
+    // previously stored grant.
+    document.cookie = '_ga=stale-permissive-default'
+    document.cookie = '_fbp=stale-permissive-default'
     localStorageMock.setItem(
       'cookie-consent',
-      JSON.stringify({ necessary: true, functional: true, analytics: false, marketing: false })
+      JSON.stringify({
+        necessary: true,
+        functional: true,
+        analytics: false,
+        marketing: false,
+      })
     )
 
     render(<CookieConsent />)
@@ -192,7 +208,12 @@ describe('CookieConsent Google Consent Mode integration', () => {
   it('does not load Clarity or Meta Pixel without an explicit grant', async () => {
     localStorageMock.setItem(
       'cookie-consent',
-      JSON.stringify({ necessary: true, functional: true, analytics: false, marketing: false })
+      JSON.stringify({
+        necessary: true,
+        functional: true,
+        analytics: false,
+        marketing: false,
+      })
     )
 
     render(<CookieConsent />)
