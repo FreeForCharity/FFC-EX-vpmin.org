@@ -217,11 +217,10 @@ export const siteConfig: SiteConfig = {
     'Viewpoint Ministries International, Inc. is a registered 501(c)(3) nonprofit providing support and assistance to communities in the United States and abroad, furthering the prospects of peaceable living through instruction and information on practical Christian living.',
   shortDescription:
     'A registered 501(c)(3) nonprofit supporting communities in the United States and abroad through practical Christian living, school outreach and Bible tracts.',
-  // Bare origin only (drift-check enforced). The template deploys to the
-  // GitHub Pages default URL; the /FFC-IN-FFC_Single_Page_Template subpath
-  // comes from NEXT_PUBLIC_BASE_PATH, which siteUrl() folds in at build time.
-  // A fork with a custom domain sets its own origin here (and no basePath).
-  url: 'https://freeforcharity.github.io',
+  // Bare origin only (drift-check enforced). public/CNAME names vpmin.org, so
+  // deploy.yml builds with an empty NEXT_PUBLIC_BASE_PATH and the site is
+  // served from the apex.
+  url: 'https://vpmin.org',
   twitterHandle: '@viewpointmin',
   contactEmail: 'info@viewpointministriesinternational.org',
   keywords: [
