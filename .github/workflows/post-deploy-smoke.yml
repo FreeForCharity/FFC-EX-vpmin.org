@@ -1027,6 +1027,10 @@ jobs:
             nonpref=$(python3 -c "import json; d=json.load(open('artifacts/donation-status.json')); print(str(d.get('nonpreferredOnly', False)).lower())" 2>/dev/null || echo "false")
             providers=$(python3 -c "import json; d=json.load(open('artifacts/donation-status.json')); print(', '.join(d.get('providers', [])))" 2>/dev/null || echo "")
           fi
+          # Owner-approved provider: do not recreate a Zeffy migration issue for PayPal.
+          if [ "$providers" = "paypal" ]; then
+            nonpref="false"
+          fi
           mig=$(gh api "repos/${REPO}/issues?state=open&labels=donation-migration&per_page=1" --jq '.[0].number // empty' || echo "")
           if [ "$nonpref" = "true" ]; then
             if [ -z "$mig" ]; then
@@ -1050,7 +1054,7 @@ jobs:
             fi
           elif [ -n "$mig" ]; then
             gh api "repos/${REPO}/issues/${mig}/comments" --method POST \
-              -f body="✅ A Zeffy surface is now detected (or scope changed) — migration complete. Auto-closing." >/dev/null
+              -f body="Donation provider choice is resolved: PayPal is approved by the owner, or the donation scope/provider has changed. No Zeffy migration is required for the approved PayPal setup. Auto-closing." >/dev/null
             gh api -X PATCH "repos/${REPO}/issues/${mig}" -f state=closed >/dev/null
             echo "Closed donation-migration issue #${mig}"
           fi
