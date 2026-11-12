@@ -5,12 +5,16 @@ import { loadCloneContent as loadCapturedContent } from './clone-content'
 import { repairCloneContent } from './clone-repairs'
 import { repairInteractiveContent } from './clone-interactive'
 import { repairLogoMarkup } from './clone-branding'
+import { applyOwnerContent } from './owner-content'
 
 export function loadCloneContent(name: string): string {
-  return repairLogoMarkup(
-    repairInteractiveContent(
-      name,
-      repairCloneContent(loadCapturedContent(name), process.env.NEXT_PUBLIC_BASE_PATH || '')
+  return applyOwnerContent(
+    name,
+    repairLogoMarkup(
+      repairInteractiveContent(
+        name,
+        repairCloneContent(loadCapturedContent(name), process.env.NEXT_PUBLIC_BASE_PATH || '')
+      )
     )
   )
 }
