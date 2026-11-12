@@ -24,6 +24,14 @@ describe('owner-approved published content', () => {
       expect(submenu.querySelectorAll('ul')).toHaveLength(0)
     })
     expect(result).not.toMatch(/Other ways to Donate|Ways to Donate/)
+    if (name === 'donate') {
+      const bodyLink = page.querySelector('.ffc-paypal-donation a')
+      expect(bodyLink?.textContent).toBe('Donate with PayPal')
+      expect(bodyLink?.getAttribute('href')).toBe(
+        'https://www.paypal.com/donate/?hosted_button_id=259HPTKEZQ57Y'
+      )
+      expect(bodyLink?.closest('li.menu-item-87')).toBeNull()
+    }
   })
 
   it('removes the phone and alternative donation destinations from every captured page', () => {

@@ -1,5 +1,22 @@
 import { test, expect } from '@playwright/test'
 
+test('the donation page offers PayPal without JavaScript', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, baseURL })
+  try {
+    const page = await context.newPage()
+    await page.goto('/donate/')
+    const link = page.getByRole('link', { name: 'Donate with PayPal', exact: true })
+    await expect(link).toBeVisible()
+    await expect(link).toHaveAttribute(
+      'href',
+      'https://www.paypal.com/donate/?hosted_button_id=259HPTKEZQ57Y'
+    )
+    await link.click({ trial: true })
+  } finally {
+    await context.close()
+  }
+})
+
 for (const mobile of [false, true]) {
   test(`Donate opens one PayPal option on ${mobile ? 'mobile' : 'desktop'}`, async ({ page }) => {
     await page.setViewportSize({ width: mobile ? 390 : 1440, height: 900 })

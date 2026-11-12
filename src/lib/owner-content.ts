@@ -74,7 +74,15 @@ export function applyOwnerContent(name: string, html: string): string {
   })
   result = result.replace(publicPhone, '')
   result = result.replace(/<p\b[^>]*>You can Zelle your donation to[\s\S]*?<\/p>/gi, '')
-  if (name === 'donate') result = result.replace(/Ways to Donate/g, 'Donate')
+  if (name === 'donate') {
+    result = result.replace(/Ways to Donate/g, 'Donate')
+    // The menu dropdown needs JavaScript. Keep a normal body link available
+    // when the Donate fallback opens this page without client-side scripts.
+    result = result.replace(
+      /(<h1\b[^>]*>[\s\S]*?<\/h1>)/i,
+      `$1<p class="ffc-paypal-donation"><a href="${paypal}" style="color:inherit;text-decoration:underline">Donate with PayPal</a></p>`
+    )
+  }
   if (name === 'childrenbibleoutreach') {
     result = result.replace(
       'This class is offered monthly on Saturday',
