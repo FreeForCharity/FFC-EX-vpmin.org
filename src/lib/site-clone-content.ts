@@ -6,14 +6,18 @@ import { repairCloneContent } from './clone-repairs'
 import { repairInteractiveContent } from './clone-interactive'
 import { repairLogoMarkup } from './clone-branding'
 import { applyOwnerContent } from './owner-content'
+import { applyNewsletterContent } from './newsletter-content'
 
 export function loadCloneContent(name: string): string {
-  return applyOwnerContent(
+  return applyNewsletterContent(
     name,
-    repairLogoMarkup(
-      repairInteractiveContent(
-        name,
-        repairCloneContent(loadCapturedContent(name), process.env.NEXT_PUBLIC_BASE_PATH || '')
+    applyOwnerContent(
+      name,
+      repairLogoMarkup(
+        repairInteractiveContent(
+          name,
+          repairCloneContent(loadCapturedContent(name), process.env.NEXT_PUBLIC_BASE_PATH || '')
+        )
       )
     )
   )
