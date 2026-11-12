@@ -12,13 +12,7 @@ const unavailableImages = new Set([
   'https://myviewletstalkaboutjesus.files.wordpress.com/2022/02/viewpoint.png?w=683',
 ])
 
-const unavailableHosts = new Set([
-  'solomonoluwabiyi.com',
-  'www.solomonoluwabiyi.com',
-  'forumslot.forumjudol.com',
-  'slojdunman.com',
-  'similar.my.id',
-])
+const unavailableHosts = new Set(['solomonoluwabiyi.com', 'www.solomonoluwabiyi.com'])
 
 export function repairCloneContent(html: string, basePath: string): string {
   let repaired = html
