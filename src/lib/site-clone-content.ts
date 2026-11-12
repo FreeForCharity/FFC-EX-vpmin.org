@@ -2,6 +2,7 @@
 // Keep the exact @/lib/clone-content alias in tsconfig.json and jest.config.js
 // pointing here. Import the generated reader relatively to avoid that alias.
 import { loadCloneContent as loadCapturedContent } from './clone-content'
+import { stripWordPressComments } from './clone-comments'
 import { repairCloneContent } from './clone-repairs'
 import { repairInteractiveContent } from './clone-interactive'
 import { repairLogoMarkup } from './clone-branding'
@@ -16,7 +17,10 @@ export function loadCloneContent(name: string): string {
       repairLogoMarkup(
         repairInteractiveContent(
           name,
-          repairCloneContent(loadCapturedContent(name), process.env.NEXT_PUBLIC_BASE_PATH || '')
+          repairCloneContent(
+            stripWordPressComments(loadCapturedContent(name)),
+            process.env.NEXT_PUBLIC_BASE_PATH || ''
+          )
         )
       )
     )
