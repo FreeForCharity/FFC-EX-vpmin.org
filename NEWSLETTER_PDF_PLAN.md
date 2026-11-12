@@ -26,8 +26,25 @@ display an embedded viewer. No external newsletter account is needed.
 7. Replace the existing 2026 Canva edit link only when the real PDF is available;
    retain previous editions until their replacements are supplied.
 
-No PDF or placeholder download is added by this PR. The actual newsletter PDF
-is still required before publication.
+## Published newsletter editions
+
+The owner supplied these PDFs; keep their uploaded filenames:
+
+| Edition     | File                                |
+| ----------- | ----------------------------------- |
+| 2026        | `public/2026_VMI_Newsletter.pdf`    |
+| 2024        | `public/VMI_2024_Newsletter.pdf`    |
+| Winter 2022 | `public/Winter_2022_Newsletter.pdf` |
+
+`src/lib/newsletter-content.ts` uses `assetPath()` to replace each edition's
+Canva link in every captured menu and embed all three PDFs on `/newsletter/`.
+Each reader has an always-visible open/download link. The site-owned capture
+wrapper applies this after loading generated markup, preserving the changes
+across recaptures.
+
+Both CSP declarations allow same-origin iframes (`frame-src 'self'`); object
+embedding stays disabled. Future editions can use `public/newsletters/` as
+described above. Update the helper when a new owner-approved edition is supplied.
 
 References:
 
