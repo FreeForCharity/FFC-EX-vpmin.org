@@ -1,9 +1,36 @@
+import { assetPath } from './assetPath'
+
 // Owner-confirmed publishing choices. Applied after loading the capture so a
 // future WordPress regeneration cannot silently restore private contact data.
 const publicPhone = /(?:\+?1[\s.-]?)?\(?301\)?[\s.-]*683[\s.-]*8930/g
 const paypal = 'https://www.paypal.com/donate/?hosted_button_id=259HPTKEZQ57Y'
 const otherGiving =
   /^https?:\/\/(?:www\.)?(?:givelify\.com|giv\.li|kindridgiving\.com|pledge\.to)\//i
+
+// Replace the whole nested donation menu, rather than redirecting each old
+// provider separately and presenting the same PayPal destination three times.
+function simplifyDonationMenus(html: string): string {
+  const tags = /<\/?li\b[^>]*>/gi
+  const stack: { start: number; donation: boolean }[] = []
+  const ranges: [number, number][] = []
+  let match: RegExpExecArray | null
+  while ((match = tags.exec(html))) {
+    if (!/^<\//.test(match[0])) {
+      stack.push({
+        start: match.index,
+        donation: /\bclass="[^"]*\bmenu-item-87\b/.test(match[0]),
+      })
+    } else {
+      const open = stack.pop()
+      if (open?.donation) ranges.push([open.start, tags.lastIndex])
+    }
+  }
+  const menu = `<li class="menu-item menu-item-has-children menu-item-87" data-donate-open="false"><a href="${assetPath('/donate/')}" role="button" data-donate-toggle aria-expanded="false">Donate</a><ul class="sub-menu"><li class="menu-item"><a href="${paypal}" target="_blank" rel="noopener noreferrer">PayPal</a></li></ul></li>`
+  for (const [start, end] of ranges.sort((a, b) => b[0] - a[0])) {
+    html = html.slice(0, start) + menu + html.slice(end)
+  }
+  return html
+}
 
 // Captured Divi modules contain nested divs. Match their balanced boundaries
 // rather than stopping at the first inner closing div and corrupting the page.
@@ -38,7 +65,7 @@ function removeModules(html: string): string {
 }
 
 export function applyOwnerContent(name: string, html: string): string {
-  let result = removeModules(html)
+  let result = simplifyDonationMenus(removeModules(html))
   result = result.replace(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi, (tag, attrs: string) => {
     const href = attrs.match(/\bhref\s*=\s*(["'])(.*?)\1/i)?.[2]
     if (href?.startsWith('tel:')) return ''
@@ -47,6 +74,15 @@ export function applyOwnerContent(name: string, html: string): string {
   })
   result = result.replace(publicPhone, '')
   result = result.replace(/<p\b[^>]*>You can Zelle your donation to[\s\S]*?<\/p>/gi, '')
+  if (name === 'donate') {
+    result = result.replace(/Ways to Donate/g, 'Donate')
+    // The menu dropdown needs JavaScript. Keep a normal body link available
+    // when the Donate fallback opens this page without client-side scripts.
+    result = result.replace(
+      /(<h1\b[^>]*>[\s\S]*?<\/h1>)/i,
+      `$1<p class="ffc-paypal-donation"><a href="${paypal}" style="color:inherit;text-decoration:underline">Donate with PayPal</a></p>`
+    )
+  }
   if (name === 'childrenbibleoutreach') {
     result = result.replace(
       'This class is offered monthly on Saturday',

@@ -331,3 +331,17 @@ body {
 .ffc-clone .rsswidget.rss-widget-title {
   text-align: left;
 }
+
+/* The donation dropdown opens on click in both desktop and cloned mobile menus. */
+.ffc-clone .menu-item-87[data-donate-open='false'] > .sub-menu {
+  display: none !important;
+}
+.ffc-clone .menu-item-87[data-donate-open='true'] > .sub-menu {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+.ffc-clone [data-donate-toggle]:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
