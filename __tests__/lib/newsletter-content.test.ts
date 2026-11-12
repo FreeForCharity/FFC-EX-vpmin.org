@@ -6,7 +6,7 @@ import { loadCloneContent } from '../../src/lib/site-clone-content'
 const root = join(process.cwd(), 'src/clone-content')
 const newsletter = readFileSync(join(root, 'newsletter.html'), 'utf8')
 
-describe('hosted 2026 newsletter', () => {
+describe('hosted newsletter editions', () => {
   const originalBasePath = process.env.NEXT_PUBLIC_BASE_PATH
 
   afterEach(() => {
@@ -21,13 +21,19 @@ describe('hosted 2026 newsletter', () => {
     expect(result).toContain(`href="${base}/2026_VMI_Newsletter.pdf"`)
     expect(result).toContain('title="2026 Viewpoint Ministries International newsletter"')
     expect(result).toContain('Open or download the 2026 newsletter PDF')
-    expect(result).toContain('Read the 2026 newsletter below')
+    expect(result).toContain('Read the 2026, 2024 and Winter 2022 newsletters below')
     expect(result).not.toContain('You can read the winter')
-    expect(result).toContain('https://www.canva.com/design/DAGazRNeHcI/')
-    expect(result).toContain('https://www.canva.com/design/DAFRId63nIY/view')
+    expect(result).toContain(`href="${base}/VMI_2024_Newsletter.pdf"`)
+    expect(result).toContain(`src="${base}/VMI_2024_Newsletter.pdf"`)
+    expect(result).toContain(`href="${base}/Winter_2022_Newsletter.pdf"`)
+    expect(result).toContain(`src="${base}/Winter_2022_Newsletter.pdf"`)
+    expect(result).toContain('Open or download the 2024 newsletter PDF')
+    expect(result).toContain('Open or download the Winter 2022 newsletter PDF')
+    expect(result.match(/<iframe /g)).toHaveLength(3)
+    expect(result).not.toContain('https://www.canva.com/design/')
   })
 
-  it('replaces the 2026 Canva link on every captured page without adding extra readers', () => {
+  it('replaces all edition Canva links on every captured page without adding extra readers', () => {
     process.env.NEXT_PUBLIC_BASE_PATH = ''
     const files = readdirSync(root, { recursive: true, encoding: 'utf8' }).filter((p) =>
       p.endsWith('.html')
@@ -39,7 +45,9 @@ describe('hosted 2026 newsletter', () => {
       menus++
       const name = file.replace(/\.html$/, '')
       const result = applyNewsletterContent(name, raw)
-      expect(result).not.toContain('canva.com/design/DAG9mpRADdw/')
+      expect(result).not.toMatch(/canva\.com\/design\/(?:DAG9mpRADdw|DAGazRNeHcI|DAFRId63nIY)\//)
+      expect(result).toContain('href="/VMI_2024_Newsletter.pdf"')
+      expect(result).toContain('href="/Winter_2022_Newsletter.pdf"')
       expect(result).toContain('href="/2026_VMI_Newsletter.pdf"')
       if (name !== 'newsletter') expect(result).not.toContain('newsletter-2026-title')
     }
@@ -49,7 +57,13 @@ describe('hosted 2026 newsletter', () => {
   it('wires the hosted PDF through the site-owned capture wrapper', () => {
     process.env.NEXT_PUBLIC_BASE_PATH = ''
     expect(loadCloneContent('newsletter')).toContain('id="newsletter-2026-title"')
-    const pdf = readFileSync(join(process.cwd(), 'public/2026_VMI_Newsletter.pdf'))
-    expect(pdf.subarray(0, 5).toString()).toBe('%PDF-')
+    for (const file of [
+      '2026_VMI_Newsletter.pdf',
+      'VMI_2024_Newsletter.pdf',
+      'Winter_2022_Newsletter.pdf',
+    ]) {
+      const pdf = readFileSync(join(process.cwd(), 'public', file))
+      expect(pdf.subarray(0, 5).toString()).toBe('%PDF-')
+    }
   })
 })
