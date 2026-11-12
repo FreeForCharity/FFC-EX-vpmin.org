@@ -17,9 +17,10 @@ describe('owner-approved published content', () => {
       )
       expect(result).not.toMatch(/\(?301\)?[\s.-]*683[\s.-]*8930|href=["']tel:/i)
       expect(result).not.toMatch(
-        /href=["']https?:\/\/(?:www\.)?(?:givelify\.com|kindridgiving\.com|pledge\.to)\//i
+        /href=["']https?:\/\/(?:www\.)?(?:givelify\.com|giv\.li|kindridgiving\.com|pledge\.to)\//i
       )
       expect(result).not.toContain('You can Zelle your donation to')
+      expect(result).not.toMatch(/Zelle[ -]Logo/i)
     }
   })
 
@@ -40,6 +41,36 @@ describe('owner-approved published content', () => {
     expect(applyOwnerContent('contact-us', html)).toBe(
       '<div><div class="et_pb_blurb"><p>Email us</p></div></div>'
     )
+  })
+
+  it('redirects captured Givelify short links to PayPal', () => {
+    const raw = readFileSync(
+      join(
+        process.cwd(),
+        'src/clone-content/insulate-your-expectations-before-marriage-audio.html'
+      ),
+      'utf8'
+    )
+    expect(raw).toContain('https://giv.li/fhsltd')
+    const result = applyOwnerContent('insulate-your-expectations-before-marriage-audio', raw)
+    expect(result).not.toContain('https://giv.li/fhsltd')
+    expect(result).toContain(
+      '<a href="https://www.paypal.com/donate/?hosted_button_id=259HPTKEZQ57Y">Donate with PayPal</a>'
+    )
+  })
+
+  it('removes nested Zelle image modules while preserving adjacent PayPal artwork', () => {
+    const paypal = '<div class="et_pb_image"><span><img src="PayPal.png" /></span></div>'
+    const html =
+      '<div><div class="et_pb_image"><div><img src="Zelle-Logo.png" /></div></div>' +
+      paypal +
+      '</div>'
+    expect(applyOwnerContent('donate', html)).toBe('<div>' + paypal + '</div>')
+    const raw = readFileSync(join(process.cwd(), 'src/clone-content/donate.html'), 'utf8')
+    expect(raw).toContain('Zelle-Logo.png')
+    const result = applyOwnerContent('donate', raw)
+    expect(result).not.toMatch(/Zelle[ -]Logo/i)
+    expect(result).toContain('hosted_button_id=259HPTKEZQ57Y')
   })
 
   it('preserves PayPal and non-donation external services', () => {

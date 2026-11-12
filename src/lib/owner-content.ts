@@ -2,7 +2,8 @@
 // future WordPress regeneration cannot silently restore private contact data.
 const publicPhone = /(?:\+?1[\s.-]?)?\(?301\)?[\s.-]*683[\s.-]*8930/g
 const paypal = 'https://www.paypal.com/donate/?hosted_button_id=259HPTKEZQ57Y'
-const otherGiving = /^https?:\/\/(?:www\.)?(?:givelify\.com|kindridgiving\.com|pledge\.to)\//i
+const otherGiving =
+  /^https?:\/\/(?:www\.)?(?:givelify\.com|giv\.li|kindridgiving\.com|pledge\.to)\//i
 
 // Captured Divi modules contain nested divs. Match their balanced boundaries
 // rather than stopping at the first inner closing div and corrupting the page.
@@ -15,14 +16,18 @@ function removeModules(html: string): string {
     if (!/^<\//.test(match[0])) {
       stack.push({
         start: match.index,
-        module: /\bclass="[^"]*\bet_pb_blurb\b/.test(match[0]),
+        module: /\bclass="[^"]*\bet_pb_(?:blurb|image)\b/.test(match[0]),
       })
       continue
     }
     const open = stack.pop()
     if (!open?.module) continue
     const content = html.slice(open.start, tags.lastIndex)
-    if (/\(?301\)?[\s.-]*683[\s.-]*8930|Givelify|kindridgiving\.com|pledge\.to/i.test(content)) {
+    if (
+      /\(?301\)?[\s.-]*683[\s.-]*8930|Givelify|giv\.li|kindridgiving\.com|pledge\.to|Zelle[ -]Logo/i.test(
+        content
+      )
+    ) {
       ranges.push([open.start, tags.lastIndex])
     }
   }
