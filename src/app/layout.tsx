@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import FfcFooter from './../components/ffc-footer'
 import CloneEnhance from './../components/clone-enhance'
+import DonationMenu from './../components/donation-menu'
 import CookieConsent from './../components/cookie-consent'
 import GoogleTagManager, { GoogleTagManagerNoScript } from './../components/google-tag-manager'
 import { siteConfig, siteUrl, twitterSite, cardDescription } from '@/lib/site.config'
@@ -155,6 +156,7 @@ export default function RootLayout({
         </main>
         <FfcFooter />
         <CloneEnhance />
+        <DonationMenu />
         <CookieConsent />
       </body>
     </html>

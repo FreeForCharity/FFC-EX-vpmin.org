@@ -3,6 +3,29 @@ import { join } from 'node:path'
 import { applyOwnerContent } from '../../src/lib/owner-content'
 
 describe('owner-approved published content', () => {
+  it.each(['index', 'donate'])('offers one PayPal option per Donate menu on %s', (name) => {
+    const raw = readFileSync(join(process.cwd(), `src/clone-content/${name}.html`), 'utf8')
+    const result = applyOwnerContent(name, raw)
+    const page = document.createElement('div')
+    page.innerHTML = result
+    const menus = page.querySelectorAll('li.menu-item-87')
+    expect(menus).toHaveLength(2)
+    menus.forEach((menu) => {
+      const toggle = menu.querySelector('[data-donate-toggle]')
+      expect(toggle?.textContent).toBe('Donate')
+      expect(toggle?.getAttribute('aria-expanded')).toBe('false')
+      const submenu = menu.querySelector(':scope > ul')!
+      const options = submenu.querySelectorAll('a')
+      expect(options).toHaveLength(1)
+      expect(options[0].textContent).toBe('PayPal')
+      expect(options[0].getAttribute('href')).toBe(
+        'https://www.paypal.com/donate/?hosted_button_id=259HPTKEZQ57Y'
+      )
+      expect(submenu.querySelectorAll('ul')).toHaveLength(0)
+    })
+    expect(result).not.toMatch(/Other ways to Donate|Ways to Donate/)
+  })
+
   it('removes the phone and alternative donation destinations from every captured page', () => {
     const root = join(process.cwd(), 'src/clone-content')
     const files = readdirSync(root, {
@@ -21,6 +44,7 @@ describe('owner-approved published content', () => {
       )
       expect(result).not.toContain('You can Zelle your donation to')
       expect(result).not.toMatch(/Zelle[ -]Logo/i)
+      expect(result).not.toMatch(/Other ways to Donate/i)
     }
   })
 
