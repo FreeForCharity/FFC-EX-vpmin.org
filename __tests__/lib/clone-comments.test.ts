@@ -9,9 +9,11 @@ const COMMENT_MARKERS =
   /id=["']comment-wrap|id=["']comments["']|id=["']respond["']|comment-respond|commentlist|comments-number|replytocom=|#respond\b|#comments?\b|wp-comments-post|gravatar\.com/i
 
 const CONTENT_DIR = join(process.cwd(), 'src', 'clone-content')
-const pages = readdirSync(CONTENT_DIR)
+// Recursive: category, tag and listing pages are captured in subdirectories.
+const pages = readdirSync(CONTENT_DIR, { recursive: true })
+  .map(String)
   .filter((f) => f.endsWith('.html'))
-  .map((f) => f.replace(/\.html$/, ''))
+  .map((f) => f.replace(/\\/g, '/').replace(/\.html$/, ''))
 
 describe('stripWordPressComments', () => {
   it('removes the comment thread and reply form section, including nested sections', () => {
@@ -47,7 +49,8 @@ describe('stripWordPressComments', () => {
 
 describe('the captured site carries no comments', () => {
   it('finds the captured pages (guards against an empty scan passing vacuously)', () => {
-    expect(pages.length).toBeGreaterThan(200)
+    expect(pages.length).toBeGreaterThan(500)
+    expect(pages.some((p) => p.includes('/'))).toBe(true)
   })
 
   it.each(pages)('source %s has no comment markup', (page) => {
