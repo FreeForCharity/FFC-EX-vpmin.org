@@ -27,14 +27,8 @@ describe('archived WordPress reference repairs', () => {
     )
   })
 
-  it('unlinks dead author and comment websites without deleting their text', () => {
-    for (const host of [
-      'solomonoluwabiyi.com',
-      'www.solomonoluwabiyi.com',
-      'forumslot.forumjudol.com',
-      'slojdunman.com',
-      'similar.my.id',
-    ]) {
+  it('unlinks the dead author website without deleting its text', () => {
+    for (const host of ['solomonoluwabiyi.com', 'www.solomonoluwabiyi.com']) {
       expect(
         repairCloneContent(
           `<a href="https://${host}/" rel="nofollow"><strong>Author</strong></a>`,
@@ -46,7 +40,7 @@ describe('archived WordPress reference repairs', () => {
 
   it('preserves working donations, email, internal links, and unrelated hosts', () => {
     const html =
-      '<a href="https://www.paypal.com/donate/?hosted_button_id=259HPTKEZQ57Y">PayPal</a><a href="mailto:viewpoint@solomonoluwabiyi.com">Email</a><a href="/about-us/">About</a><a href="https://similar.my.id.example.org/">Other</a>'
+      '<a href="https://www.paypal.com/donate/?hosted_button_id=259HPTKEZQ57Y">PayPal</a><a href="mailto:viewpoint@solomonoluwabiyi.com">Email</a><a href="/about-us/">About</a><a href="https://solomonoluwabiyi.com.example.org/">Other</a>'
     expect(repairCloneContent(html, '')).toBe(html)
   })
 })

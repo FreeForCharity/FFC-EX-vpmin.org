@@ -217,11 +217,10 @@ export const siteConfig: SiteConfig = {
     'Viewpoint Ministries International, Inc. is a registered 501(c)(3) nonprofit providing support and assistance to communities in the United States and abroad, furthering the prospects of peaceable living through instruction and information on practical Christian living.',
   shortDescription:
     'A registered 501(c)(3) nonprofit supporting communities in the United States and abroad through practical Christian living, school outreach and Bible tracts.',
-  // Bare origin only (drift-check enforced). The template deploys to the
-  // GitHub Pages default URL; the /FFC-IN-FFC_Single_Page_Template subpath
-  // comes from NEXT_PUBLIC_BASE_PATH, which siteUrl() folds in at build time.
-  // A fork with a custom domain sets its own origin here (and no basePath).
-  url: 'https://freeforcharity.github.io',
+  // Bare origin only (drift-check enforced). public/CNAME names vpmin.org, so
+  // deploy.yml builds with an empty NEXT_PUBLIC_BASE_PATH and the site is
+  // served from the apex.
+  url: 'https://vpmin.org',
   twitterHandle: '@viewpointmin',
   contactEmail: 'info@viewpointministriesinternational.org',
   keywords: [
@@ -243,11 +242,26 @@ export const siteConfig: SiteConfig = {
   social: [
     { label: 'Facebook', href: 'http://facebook.com/ViewpointMinistries' },
     { label: 'X (Twitter)', href: 'https://twitter.com/viewpointmin' },
-    { label: 'Instagram', href: 'https://www.instagram.com/viewpointministries/' },
-    { label: 'YouTube', href: 'https://www.youtube.com/c/ViewpointMinistries/videos' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/company/viewpoint-ministries/' },
-    { label: 'Pinterest', href: 'https://www.pinterest.com/viewpointministries/_created/' },
-    { label: 'Tumblr', href: 'https://www.tumblr.com/blog/viewpointministries' },
+    {
+      label: 'Instagram',
+      href: 'https://www.instagram.com/viewpointministries/',
+    },
+    {
+      label: 'YouTube',
+      href: 'https://www.youtube.com/c/ViewpointMinistries/videos',
+    },
+    {
+      label: 'LinkedIn',
+      href: 'https://www.linkedin.com/company/viewpoint-ministries/',
+    },
+    {
+      label: 'Pinterest',
+      href: 'https://www.pinterest.com/viewpointministries/_created/',
+    },
+    {
+      label: 'Tumblr',
+      href: 'https://www.tumblr.com/blog/viewpointministries',
+    },
   ],
   // IRS EIN, confirmed against ProPublica's Nonprofit Explorer (IRS BMF:
   // Viewpoint Ministries International Inc, 501(c)(3), ruling 2022-03).
@@ -256,12 +270,10 @@ export const siteConfig: SiteConfig = {
   // 2014, and the charity publishes no founding year. It is optional, so an
   // absent `foundingDate` simply omits schema.org's `foundingDate`.
   nonprofitStatus: 'https://schema.org/Nonprofit501c3',
-  phone: { display: '(301) 683-8930', tel: '3016838930' },
-  // The charity publishes no mailing address: empty and pending (never the
-  // template's offices, which are not this organisation's).
+  phone: { display: '', tel: '' },
+  // No public mailing address, by owner direction.
   addresses: [],
-  // No Candid / GuideStar profile supplied by the charity yet: empty and
-  // pending (never another organization's profile, and not derived from the EIN).
+  // Owner opted out of a public Candid / GuideStar integration.
   guidestar: {
     profileUrl: '',
     directProfileUrl: '',
@@ -286,9 +298,8 @@ export const siteConfig: SiteConfig = {
     eventsFacebookPageUrl: '',
     microsoftFormUrl: '',
   },
-  // Footer-standard fields still awaiting the charity; each renders a visible
-  // 'awaiting information' placeholder until it is filled in.
-  pending: ['address', 'guidestar', 'team'],
+  // Address, phone and leadership are intentionally unpublished, not pending.
+  pending: [],
 }
 
 /**
