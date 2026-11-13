@@ -11,8 +11,8 @@ They supersede older assumptions in the migration issues.
   and fourth Saturday, 11:00 am to noon Eastern Time, as confirmed in response
   to the schedule question.
 - Keep PayPal as the donation option for now. Do not request a Zeffy migration.
-- Explore a newsletter PDF hosted with GitHub Pages; see NEWSLETTER_PDF_PLAN.md.
-  The actual public-ready newsletter PDF is still needed.
+- The 2026, 2024 and Winter 2022 newsletter PDFs are uploaded and connected to
+  readers/download links; see NEWSLETTER_PDF_PLAN.md (merged PRs #83 and #87).
 - Owner reports the complete old-site backup remains on WordPress and wants
   the old site available as a fallback. This is not independent proof of a
   tested, separately stored backup. Do not cancel the fallback hosting yet.
@@ -32,5 +32,7 @@ They supersede older assumptions in the migration issues.
   WordPress fallback takes precedence until its storage/hosting arrangement is
   confirmed. Do not remove the only retained original.
 
-Current deployment/smoke incidents (#76/#77) and the final domain/redirect/email
-checks remain blockers to completing the overall migration.
+Status verified 2026-11-13: deployment/smoke incidents #76/#77 have recovered;
+vpmin.org and www pass HTTPS and all 594 sitemap routes resolve. The old-domain
+redirect, backup/restore verification, service record and retirement work remain
+open. See migration/README.md. Google Analytics remains deferred in #17.

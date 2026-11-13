@@ -1,0 +1,26 @@
+{
+  "sourceHosts": [
+    "viewpointministriesinternational.org",
+    "www.viewpointministriesinternational.org"
+  ],
+  "targetOrigin": "https://vpmin.org",
+  "statusCode": 301,
+  "preserveQueryString": true,
+  "defaultBehavior": "Preserve the requested path; apply overrides before the default redirect.",
+  "inventoryRows": 590,
+  "normalizedPaths": 587,
+  "unchangedPaths": 576,
+  "overrides": {
+    "/1-of-3-independence_-leadership-character-in-government-politics-the-state-of-nigeria-w_-mr-femi-odedeyi/": "/1-of-3-independence-leadership-character-in-government-politics-the-state-of-nigeria-w-mr-femi-odedeyi/",
+    "/2-of-3-independence_-leadership-character-in-government-politics-the-state-of-nigeria-w_-mr-femi-odedeyi/": "/2-of-3-independence-leadership-character-in-government-politics-the-state-of-nigeria-w-mr-femi-odedeyi/",
+    "/3-of-3-independence_-leadership-character-in-government-politics-the-state-of-nigeria-w_-mr-femi-odedeyi/": "/3-of-3-independence-leadership-character-in-government-politics-the-state-of-nigeria-w-mr-femi-odedeyi/",
+    "/discernment_-critical-ingredient-for-daily-living-in-the-era-of-technology-w_-dr-t-oni-and-dr-t-ajagemo/": "/discernment-critical-ingredient-for-daily-living-in-the-era-of-technology-w-dr-t-oni-and-dr-t-ajagemo/",
+    "/identity_-our-place-in-god-w-dr-toba-ajagemo-1-of-2/": "/identity-our-place-in-god-w-dr-toba-ajagemo-1-of-2/",
+    "/identity_-our-place-in-god-w-dr-toba-ajagemo-2-of-2/": "/identity-our-place-in-god-w-dr-toba-ajagemo-2-of-2/",
+    "/our-contemporary-world-russia-ukraine-and-the-us%EF%BF%BC/": "/our-contemporary-world-russia-ukraine-and-the-us-ef-bf-bc/",
+    "/pastors_ministers-wife_-contributors-to-nation-building-2-of-2/": "/pastors-ministers-wife-contributors-to-nation-building-2-of-2/",
+    "/politics-the-old-time-game-in-our-contemporary-world-5%EF%BF%BC/": "/politics-the-old-time-game-in-our-contemporary-world-5-ef-bf-bc/",
+    "/the-pulpit-impurities-w_-mr-tomori-folarin/": "/the-pulpit-impurities-w-mr-tomori-folarin/",
+    "/the-reality-of-you-your-faith-and-your-health-w_-dr-deji-alabi/": "/the-reality-of-you-your-faith-and-your-health-w-dr-deji-alabi/"
+  }
+}
