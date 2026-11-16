@@ -44,8 +44,8 @@
     "@eslint/eslintrc": "^3",
     "@lhci/cli": "^0.16.0",
     "@next/bundle-analyzer": "^16.4.5",
-    "@playwright/test": "^1.64.1",
-    "@tailwindcss/postcss": "^4.3.4",
+    "@playwright/test": "^1.65.0",
+    "@tailwindcss/postcss": "^4.3.5",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
@@ -63,8 +63,8 @@
     "jest-environment-jsdom": "^30.5.2",
     "linkinator": "^8.1.0",
     "prettier": "^3.9.10",
-    "serve": "^14.2.6",
-    "tailwindcss": "^4.3.4",
+    "serve": "^14.2.7",
+    "tailwindcss": "^4.3.5",
     "typescript": "^6"
   },
   "pnpm": {
