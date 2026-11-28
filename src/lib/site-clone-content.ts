@@ -8,18 +8,24 @@ import { repairInteractiveContent } from './clone-interactive'
 import { repairLogoMarkup } from './clone-branding'
 import { applyOwnerContent } from './owner-content'
 import { applyNewsletterContent } from './newsletter-content'
+import { applyResourcesContent } from './resources-content'
 
 export function loadCloneContent(name: string): string {
-  return applyNewsletterContent(
+  return applyResourcesContent(
     name,
-    applyOwnerContent(
+    applyNewsletterContent(
       name,
-      repairLogoMarkup(
-        repairInteractiveContent(
-          name,
-          repairCloneContent(
-            stripWordPressComments(loadCapturedContent(name)),
-            process.env.NEXT_PUBLIC_BASE_PATH || ''
+      applyOwnerContent(
+        name,
+        repairLogoMarkup(
+          repairInteractiveContent(
+            name,
+            repairCloneContent(
+              stripWordPressComments(
+                loadCapturedContent(name.startsWith('resources/page/') ? 'resources' : name)
+              ),
+              process.env.NEXT_PUBLIC_BASE_PATH || ''
+            )
           )
         )
       )

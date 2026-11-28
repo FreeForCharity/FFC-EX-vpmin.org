@@ -345,3 +345,31 @@ body {
   outline: 2px solid currentColor;
   outline-offset: 4px;
 }
+
+/* The Resources capture retains Divi's hidden-until-Salvattore cards, but
+   Salvattore is not shipped with the static site. Lay out the original cards
+   in source order and keep them readable even with JavaScript disabled. */
+.ffc-clone.page-id-62 .ffc-resources-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 30px 3%;
+  align-items: start;
+}
+.ffc-clone.page-id-62 .ffc-resources-grid > .et_pb_post {
+  opacity: 1;
+  float: none;
+  width: auto;
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 980px) {
+  .ffc-clone.page-id-62 .ffc-resources-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 767px) {
+  .ffc-clone.page-id-62 .ffc-resources-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
